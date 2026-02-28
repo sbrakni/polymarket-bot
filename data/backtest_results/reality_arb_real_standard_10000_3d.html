@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backtest — REALITY_ARB (2026-02-26 → 2026-02-28)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh}
+  a{color:#60a5fa}
+  /* ── Header ── */
+  .header{background:linear-gradient(135deg,#1e2130 0%,#1a1d27 100%);
+           border-bottom:1px solid #2d3748;padding:28px 32px 20px}
+  .header-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .header h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+  .header h1 span{color:#60a5fa}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;
+          border-radius:20px;font-size:.8rem;font-weight:600;letter-spacing:.02em}
+  .badge-green{background:#064e3b;color:#34d399;border:1px solid #065f46}
+  .badge-red{background:#7f1d1d;color:#f87171;border:1px solid #991b1b}
+  .badge-blue{background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8}
+  .badge-yellow{background:#451a03;color:#fbbf24;border:1px solid #92400e}
+  .header-meta{font-size:.8rem;color:#64748b;margin-top:6px}
+  /* ── KPI grid ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+             gap:16px;padding:24px 32px}
+  .kpi{background:#1a1d27;border:1px solid #2d3748;border-radius:14px;
+        padding:20px 22px;position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+                background:var(--accent,#3b82f6)}
+  .kpi-label{font-size:.72rem;color:#94a3b8;text-transform:uppercase;
+              letter-spacing:.06em;margin-bottom:6px}
+  .kpi-value{font-size:2rem;font-weight:800;line-height:1}
+  .kpi-sub{font-size:.78rem;color:#64748b;margin-top:4px}
+  .c-green{color:#34d399;--accent:#34d399}
+  .c-red{color:#f87171;--accent:#f87171}
+  .c-blue{color:#60a5fa;--accent:#60a5fa}
+  .c-yellow{color:#fbbf24;--accent:#fbbf24}
+  .c-purple{color:#a78bfa;--accent:#a78bfa}
+  .c-cyan{color:#22d3ee;--accent:#22d3ee}
+  /* ── Section ── */
+  .section{margin:0 32px 32px}
+  .section-title{font-size:1.05rem;font-weight:600;color:#94a3b8;
+                  margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .section-title::after{content:'';flex:1;height:1px;background:#2d3748}
+  /* ── Chart card ── */
+  .chart-card{background:#1a1d27;border:1px solid #2d3748;border-radius:14px;padding:24px}
+  .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:900px){.chart-row{grid-template-columns:1fr}}
+  /* ── Table ── */
+  .table-wrap{overflow-x:auto;border-radius:14px;border:1px solid #2d3748}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  thead th{background:#1e2130;padding:12px 16px;text-align:left;
+            font-size:.72rem;text-transform:uppercase;color:#64748b;
+            letter-spacing:.06em;white-space:nowrap}
+  tbody td{padding:10px 16px;border-bottom:1px solid #1e2130;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:#1e2130}
+  .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600}
+  .tag-green{background:#064e3b;color:#34d399}
+  .tag-red{background:#7f1d1d;color:#f87171}
+  .tag-blue{background:#1e3a5f;color:#93c5fd}
+  /* ── Scaling table ── */
+  .scale-row-highlight{background:#1e2130 !important}
+  /* ── Footer ── */
+  footer{text-align:center;padding:24px;color:#334155;font-size:.78rem;border-top:1px solid #1e2130;margin-top:20px}
+  /* ── Warn box ── */
+  .warn{background:#1c1a0a;border:1px solid #713f12;border-radius:10px;
+         padding:14px 18px;font-size:.82rem;color:#fbbf24;margin-bottom:24px}
+  .warn strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>📊 Backtest — <span>REALITY_ARB</span></h1>
+      <div class="header-meta">
+        Période : <strong>2026-02-26</strong> → <strong>2026-02-28</strong> &nbsp;|&nbsp;
+        Preset risque : <strong>standard_10000</strong> &nbsp;|&nbsp;
+        Généré le 28/02/2026 à 22:45
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="badge badge-green">
+        +$481.41 P&L
+      </span>
+      <span class="badge badge-green">
+        +6.0% ROI
+      </span>
+      <span class="badge badge-blue">
+        53 trades
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ KPIs ═══════════════════════ -->
+<div class="kpi-grid">
+  <div class="kpi c-green">
+    <div class="kpi-label">P&L Total</div>
+    <div class="kpi-value">+$481.41</div>
+    <div class="kpi-sub">Sur capital $10,000</div>
+  </div>
+  <div class="kpi c-blue">
+    <div class="kpi-label">ROI Période</div>
+    <div class="kpi-value">+6.0%</div>
+    <div class="kpi-sub">2026-02-26 → 2026-02-28</div>
+  </div>
+  <div class="kpi c-cyan">
+    <div class="kpi-label">Trades exécutés</div>
+    <div class="kpi-value">53</div>
+    <div class="kpi-sub">sur 53 marchés scannés</div>
+  </div>
+  <div class="kpi c-green">
+    <div class="kpi-label">Win Rate</div>
+    <div class="kpi-value">100.0%</div>
+    <div class="kpi-sub">Arb binaire ≈ quasi-certitude</div>
+  </div>
+  <div class="kpi c-purple">
+    <div class="kpi-label">Sharpe Ratio</div>
+    <div class="kpi-value" style="color:#34d399">39.75</div>
+    <div class="kpi-sub">Excellent (> 1)</div>
+  </div>
+  <div class="kpi c-red">
+    <div class="kpi-label">Max Drawdown</div>
+    <div class="kpi-value">-$0.00</div>
+    <div class="kpi-sub">Pire perte de creux à pic</div>
+  </div>
+  <div class="kpi c-yellow">
+    <div class="kpi-label">Profit Factor</div>
+    <div class="kpi-value">48141.06x</div>
+    <div class="kpi-sub">Gains bruts / Pertes brutes</div>
+  </div>
+  <div class="kpi c-blue">
+    <div class="kpi-label">Profit moyen / trade</div>
+    <div class="kpi-value">$9.083</div>
+    <div class="kpi-sub">Frais payés : $0.38</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ EQUITY CURVE ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📈 Courbe des Capitaux (Cumulative P&L)</div>
+  <div class="chart-card">
+    <canvas id="equityChart" height="110"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DRAWDOWN ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📉 Drawdown (creux depuis le pic)</div>
+  <div class="chart-card">
+    <canvas id="drawdownChart" height="70"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════ MONTHLY P&L + TRADES ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📅 Performance Mensuelle</div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">P&L par mois ($)</div>
+      <canvas id="monthlyPnlChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">Nombre de trades par mois</div>
+      <canvas id="monthlyTradesChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DISTRIBUTIONS ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">🔍 Distributions</div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">
+        Distribution des spreads YES+NO au moment du trade
+      </div>
+      <canvas id="spreadChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">
+        Distribution des profits par trade ($)
+      </div>
+      <canvas id="profitHistChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCALING ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">💰 Scalabilité — Capital Investi vs Profit Projeté</div>
+  <div class="chart-card" style="margin-bottom:20px">
+    <canvas id="scalingChart" height="90"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Capital investi</th>
+          <th>Profit projeté</th>
+          <th>ROI estimé</th>
+          <th>Max Drawdown</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>$       100</strong></td>
+          <td style="color:#34d399"><strong>+$4.81</strong></td>
+          <td style="color:#34d399">+6.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$       500</strong></td>
+          <td style="color:#34d399"><strong>+$24.07</strong></td>
+          <td style="color:#34d399">+6.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$     1,000</strong></td>
+          <td style="color:#34d399"><strong>+$48.14</strong></td>
+          <td style="color:#34d399">+6.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$     5,000</strong></td>
+          <td style="color:#34d399"><strong>+$240.71</strong></td>
+          <td style="color:#34d399">+6.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr class="scale-row-highlight">
+          <td><strong>$    10,000</strong>&nbsp;★</td>
+          <td style="color:#34d399"><strong>+$481.41</strong></td>
+          <td style="color:#34d399">+6.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$    25,000</strong></td>
+          <td style="color:#34d399"><strong>+$1,203.53</strong></td>
+          <td style="color:#34d399">+6.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$    50,000</strong></td>
+          <td style="color:#34d399"><strong>+$2,065.05</strong></td>
+          <td style="color:#34d399">+5.2%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td><span style="color:#64748b;font-size:.8rem">Liquidité saturée — rendements réduits</span></td>
+        </tr>
+        <tr>
+          <td><strong>$   100,000</strong></td>
+          <td style="color:#34d399"><strong>+$3,354.68</strong></td>
+          <td style="color:#34d399">+4.2%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td><span style="color:#64748b;font-size:.8rem">Liquidité saturée — rendements réduits</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ AVERTISSEMENT ═══════════════════════ -->
+<div class="section">
+  <div class="warn">
+    <strong>⚠️ Avertissement :</strong>
+    Les performances passées ne garantissent pas les performances futures.
+    Ce backtest est une simulation sur données historiques réelles Polymarket, mais sans tenir compte
+    de la compétition entre bots, des changements de frais dynamiques, ou de la latence réelle d'exécution.
+    Toujours tester en <strong>DRY-RUN</strong> avant de déployer du capital réel.
+  </div>
+</div>
+
+<!-- ═══════════════════════ TRADES TABLE ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📋 Derniers Trades Simulés</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Date</th><th>Question (extrait)</th>
+          <th>Prix YES</th><th>Prix NO</th><th>Spread</th>
+          <th>Taille</th><th>Profit net</th><th>Résolution</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td style="color:#64748b">1</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Anaheim Ducks beat Winnipeg Jets?">Will Anaheim Ducks beat Winnipeg Jets?…</td>
+          <td>$0.5000</td>
+          <td>$0.5000</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$5.9976</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">2</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Utah Mammoth beat Minnesota Wild?">Will Utah Mammoth beat Minnesota Wild?…</td>
+          <td>$0.5710</td>
+          <td>$0.4290</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>16</td>
+          <td class="c-green"><strong>+$6.8610</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">3</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Los Angeles Kings beat Edmonton Oilers?">Will Los Angeles Kings beat Edmonton Oilers?…</td>
+          <td>$0.2979</td>
+          <td>$0.7021</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>18</td>
+          <td class="c-green"><strong>+$5.3571</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">4</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Colorado Avalanche beat Minnesota Wild?">Will Colorado Avalanche beat Minnesota Wild?…</td>
+          <td>$0.4290</td>
+          <td>$0.5710</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>16</td>
+          <td class="c-green"><strong>+$6.8610</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">5</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will St Louis Blues beat Seattle Kraken?">Will St Louis Blues beat Seattle Kraken?…</td>
+          <td>$0.6056</td>
+          <td>$0.3944</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>17</td>
+          <td class="c-green"><strong>+$6.7015</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">6</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Florida Panthers beat Toronto Maple Leafs?">Will Florida Panthers beat Toronto Maple Leafs?…</td>
+          <td>$0.6056</td>
+          <td>$0.3944</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>17</td>
+          <td class="c-green"><strong>+$6.7015</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">7</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Carolina Hurricanes beat Tampa Bay Lightning?">Will Carolina Hurricanes beat Tampa Bay Lightning?…</td>
+          <td>$0.5000</td>
+          <td>$0.5000</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$5.9976</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">8</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Los Angeles Kings beat Vegas Golden Knights?">Will Los Angeles Kings beat Vegas Golden Knights?…</td>
+          <td>$0.4643</td>
+          <td>$0.5357</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>14</td>
+          <td class="c-green"><strong>+$6.4977</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">9</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Charlotte Hornets beat Portland Trail Blazers?">Will Charlotte Hornets beat Portland Trail Blazers?…</td>
+          <td>$0.8248</td>
+          <td>$0.1752</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>26</td>
+          <td class="c-green"><strong>+$4.5467</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">10</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Charlotte Hornets beat Portland Trail Blazers?">Will Charlotte Hornets beat Portland Trail Blazers?…</td>
+          <td>$0.7228</td>
+          <td>$0.2772</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>17</td>
+          <td class="c-green"><strong>+$4.7071</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">11</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Oklahoma City Thunder beat Denver Nuggets?">Will Oklahoma City Thunder beat Denver Nuggets?…</td>
+          <td>$0.6413</td>
+          <td>$0.3587</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>69</td>
+          <td class="c-green"><strong>+$24.7336</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">12</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Oklahoma City Thunder beat Denver Nuggets?">Will Oklahoma City Thunder beat Denver Nuggets?…</td>
+          <td>$0.5848</td>
+          <td>$0.4152</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$4.9801</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">13</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Dallas Mavericks beat Memphis Grizzlies?">Will Dallas Mavericks beat Memphis Grizzlies?…</td>
+          <td>$0.1490</td>
+          <td>$0.8510</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>21</td>
+          <td class="c-green"><strong>+$3.1208</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">14</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Dallas Mavericks beat Memphis Grizzlies?">Will Dallas Mavericks beat Memphis Grizzlies?…</td>
+          <td>$0.2258</td>
+          <td>$0.7742</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$2.7055</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">15</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Dallas Mavericks beat Memphis Grizzlies?">Will Dallas Mavericks beat Memphis Grizzlies?…</td>
+          <td>$0.2902</td>
+          <td>$0.7098</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>11</td>
+          <td class="c-green"><strong>+$3.1890</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">16</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Milwaukee Bucks beat New York Knicks?">Will Milwaukee Bucks beat New York Knicks?…</td>
+          <td>$0.0623</td>
+          <td>$0.9377</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$0.4956</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">17</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Milwaukee Bucks beat New York Knicks?">Will Milwaukee Bucks beat New York Knicks?…</td>
+          <td>$0.1443</td>
+          <td>$0.8557</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>11</td>
+          <td class="c-green"><strong>+$1.5834</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">18</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Milwaukee Bucks beat New York Knicks?">Will Milwaukee Bucks beat New York Knicks?…</td>
+          <td>$0.1982</td>
+          <td>$0.8018</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$1.5831</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">19</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Boston Celtics beat Brooklyn Nets?">Will Boston Celtics beat Brooklyn Nets?…</td>
+          <td>$0.9055</td>
+          <td>$0.0945</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$0.7535</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">20</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Boston Celtics beat Brooklyn Nets?">Will Boston Celtics beat Brooklyn Nets?…</td>
+          <td>$0.8028</td>
+          <td>$0.1972</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$1.5749</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">21</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Detroit Pistons beat Cleveland Cavaliers?">Will Detroit Pistons beat Cleveland Cavaliers?…</td>
+          <td>$0.5721</td>
+          <td>$0.4279</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>93</td>
+          <td class="c-green"><strong>+$39.7723</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">22</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Los Angeles Clippers beat Minnesota Timberwolves?">Will Los Angeles Clippers beat Minnesota Timberwolves?…</td>
+          <td>$0.3813</td>
+          <td>$0.6187</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>77</td>
+          <td class="c-green"><strong>+$29.3394</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">23</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Utah Jazz beat New Orleans Pelicans?">Will Utah Jazz beat New Orleans Pelicans?…</td>
+          <td>$0.2563</td>
+          <td>$0.7437</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>43</td>
+          <td class="c-green"><strong>+$11.0099</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">24</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Utah Jazz beat New Orleans Pelicans?">Will Utah Jazz beat New Orleans Pelicans?…</td>
+          <td>$0.3352</td>
+          <td>$0.6648</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>14</td>
+          <td class="c-green"><strong>+$4.6894</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">25</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Phoenix Suns beat Los Angeles Lakers?">Will Phoenix Suns beat Los Angeles Lakers?…</td>
+          <td>$0.5721</td>
+          <td>$0.4279</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>93</td>
+          <td class="c-green"><strong>+$39.7723</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">26</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Dallas Mavericks beat Sacramento Kings?">Will Dallas Mavericks beat Sacramento Kings?…</td>
+          <td>$0.2950</td>
+          <td>$0.7050</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>52</td>
+          <td class="c-green"><strong>+$15.3232</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">27</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Dallas Mavericks beat Sacramento Kings?">Will Dallas Mavericks beat Sacramento Kings?…</td>
+          <td>$0.3664</td>
+          <td>$0.6336</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>14</td>
+          <td class="c-green"><strong>+$5.1260</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">28</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Chicago Bulls beat Portland Trail Blazers?">Will Chicago Bulls beat Portland Trail Blazers?…</td>
+          <td>$0.2950</td>
+          <td>$0.7050</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>52</td>
+          <td class="c-green"><strong>+$15.3232</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">29</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Chicago Bulls beat Portland Trail Blazers?">Will Chicago Bulls beat Portland Trail Blazers?…</td>
+          <td>$0.3664</td>
+          <td>$0.6336</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>14</td>
+          <td class="c-green"><strong>+$5.1260</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">30</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Orlando Magic beat Houston Rockets?">Will Orlando Magic beat Houston Rockets?…</td>
+          <td>$0.4044</td>
+          <td>$0.5956</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>84</td>
+          <td class="c-green"><strong>+$33.9469</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">31</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Brooklyn Nets beat San Antonio Spurs?">Will Brooklyn Nets beat San Antonio Spurs?…</td>
+          <td>$0.1752</td>
+          <td>$0.8248</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>26</td>
+          <td class="c-green"><strong>+$4.5467</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">32</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Brooklyn Nets beat San Antonio Spurs?">Will Brooklyn Nets beat San Antonio Spurs?…</td>
+          <td>$0.2772</td>
+          <td>$0.7228</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>17</td>
+          <td class="c-green"><strong>+$4.7071</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">33</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Atlanta Hawks beat Washington Wizards?">Will Atlanta Hawks beat Washington Wizards?…</td>
+          <td>$0.9431</td>
+          <td>$0.0569</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>7</td>
+          <td class="c-green"><strong>+$0.3956</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">34</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Atlanta Hawks beat Washington Wizards?">Will Atlanta Hawks beat Washington Wizards?…</td>
+          <td>$0.8640</td>
+          <td>$0.1360</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>11</td>
+          <td class="c-green"><strong>+$1.4927</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">35</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Atlanta Hawks beat Washington Wizards?">Will Atlanta Hawks beat Washington Wizards?…</td>
+          <td>$0.8018</td>
+          <td>$0.1982</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$1.7810</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">36</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Philadelphia 76ers beat Miami Heat?">Will Philadelphia 76ers beat Miami Heat?…</td>
+          <td>$0.6632</td>
+          <td>$0.3368</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>63</td>
+          <td class="c-green"><strong>+$21.1991</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">37</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Indiana Pacers beat Charlotte Hornets?">Will Indiana Pacers beat Charlotte Hornets?…</td>
+          <td>$0.1062</td>
+          <td>$0.8938</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>14</td>
+          <td class="c-green"><strong>+$1.4818</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">38</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Indiana Pacers beat Charlotte Hornets?">Will Indiana Pacers beat Charlotte Hornets?…</td>
+          <td>$0.1815</td>
+          <td>$0.8185</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>11</td>
+          <td class="c-green"><strong>+$1.9929</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">39</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Indiana Pacers beat Charlotte Hornets?">Will Indiana Pacers beat Charlotte Hornets?…</td>
+          <td>$0.2464</td>
+          <td>$0.7536</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>10</td>
+          <td class="c-green"><strong>+$2.4607</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">40</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Denver Nuggets beat Boston Celtics?">Will Denver Nuggets beat Boston Celtics?…</td>
+          <td>$0.8510</td>
+          <td>$0.1490</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>21</td>
+          <td class="c-green"><strong>+$3.1208</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">41</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Denver Nuggets beat Boston Celtics?">Will Denver Nuggets beat Boston Celtics?…</td>
+          <td>$0.7620</td>
+          <td>$0.2380</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>14</td>
+          <td class="c-green"><strong>+$3.3271</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">42</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Houston Rockets beat Sacramento Kings?">Will Houston Rockets beat Sacramento Kings?…</td>
+          <td>$0.9481</td>
+          <td>$0.0519</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>6</td>
+          <td class="c-green"><strong>+$0.3092</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">43</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Houston Rockets beat Sacramento Kings?">Will Houston Rockets beat Sacramento Kings?…</td>
+          <td>$0.8718</td>
+          <td>$0.1282</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>10</td>
+          <td class="c-green"><strong>+$1.2784</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">44</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Houston Rockets beat Sacramento Kings?">Will Houston Rockets beat Sacramento Kings?…</td>
+          <td>$0.8190</td>
+          <td>$0.1810</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$1.4457</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">45</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Houston Rockets beat Sacramento Kings?">Will Houston Rockets beat Sacramento Kings?…</td>
+          <td>$0.7617</td>
+          <td>$0.2383</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$2.1422</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">46</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Milwaukee Bucks beat Cleveland Cavaliers?">Will Milwaukee Bucks beat Cleveland Cavaliers?…</td>
+          <td>$0.5483</td>
+          <td>$0.4517</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>102</td>
+          <td class="c-green"><strong>+$46.0550</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">47</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Detroit Pistons beat Oklahoma City Thunder?">Will Detroit Pistons beat Oklahoma City Thunder?…</td>
+          <td>$0.6845</td>
+          <td>$0.3155</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>57</td>
+          <td class="c-green"><strong>+$17.9671</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">48</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Detroit Pistons beat Oklahoma City Thunder?">Will Detroit Pistons beat Oklahoma City Thunder?…</td>
+          <td>$0.6336</td>
+          <td>$0.3664</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>10</td>
+          <td class="c-green"><strong>+$3.6614</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">49</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Detroit Pistons beat Oklahoma City Thunder?">Will Detroit Pistons beat Oklahoma City Thunder?…</td>
+          <td>$0.5831</td>
+          <td>$0.4169</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>10</td>
+          <td class="c-green"><strong>+$4.1669</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">50</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Toronto Raptors beat San Antonio Spurs?">Will Toronto Raptors beat San Antonio Spurs?…</td>
+          <td>$0.4517</td>
+          <td>$0.5483</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>102</td>
+          <td class="c-green"><strong>+$46.0550</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">51</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Memphis Grizzlies beat Golden State Warriors?">Will Memphis Grizzlies beat Golden State Warriors?…</td>
+          <td>$0.1260</td>
+          <td>$0.8740</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>18</td>
+          <td class="c-green"><strong>+$2.2623</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">52</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Memphis Grizzlies beat Golden State Warriors?">Will Memphis Grizzlies beat Golden State Warriors?…</td>
+          <td>$0.2140</td>
+          <td>$0.7860</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>13</td>
+          <td class="c-green"><strong>+$2.7782</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">53</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Memphis Grizzlies beat Golden State Warriors?">Will Memphis Grizzlies beat Golden State Warriors?…</td>
+          <td>$0.2677</td>
+          <td>$0.7323</td>
+          <td style="color:#94a3b8">$1.0000</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$2.4068</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  Polymarket Arbitrage Bot — Rapport généré le 28/02/2026 à 22:45 &nbsp;|&nbsp;
+  Données : Polymarket Gamma API &nbsp;|&nbsp; ⚠️ Usage éducatif uniquement
+</footer>
+
+<script>
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = '#2d3748';
+Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+
+const eqDates  = ["2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28"];
+const eqValues = [2.4068, 6.5737, 9.3519, 13.0133, 15.2756, 61.3306, 79.2977, 81.4399, 82.8856, 84.164, 130.219, 130.5282, 133.8553, 136.9761, 143.4738, 145.9345, 147.9274, 149.4092, 170.6083, 176.6059, 183.3074, 185.0884, 186.5811, 191.2882, 191.6838, 196.2305, 230.1774, 235.3034, 250.6266, 257.3281, 262.4541, 277.7773, 282.4667, 322.239, 333.2489, 340.1099, 369.4493, 374.8064, 414.5787, 416.1536, 416.9071, 418.4902, 420.0736, 420.5692, 423.7582, 426.4637, 429.5845, 436.4455, 441.4256, 466.1592, 472.1568, 476.8639, 481.4106];
+const ddValues = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
+// ── Equity Curve ──
+new Chart(document.getElementById('equityChart'), {
+  type: 'line',
+  data: {
+    labels: eqDates,
+    datasets: [{
+      label: 'P&L cumulatif ($)',
+      data: eqValues,
+      borderColor: '#34d399',
+      backgroundColor: (ctx) => {
+        const g = ctx.chart.ctx.createLinearGradient(0,0,0,300);
+        g.addColorStop(0, 'rgba(52,211,153,0.18)');
+        g.addColorStop(1, 'rgba(52,211,153,0.01)');
+        return g;
+      },
+      fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' $' + ctx.parsed.y.toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxTicksLimit: 12, maxRotation: 0}},
+      y: {
+        ticks: {callback: v => '$' + v.toLocaleString('fr-FR', {minimumFractionDigits:0})},
+        grid: {color: '#1e2130'}
+      }
+    }
+  }
+});
+
+// ── Drawdown ──
+new Chart(document.getElementById('drawdownChart'), {
+  type: 'line',
+  data: {
+    labels: eqDates,
+    datasets: [{
+      label: 'Drawdown ($)',
+      data: ddValues.map(v => -v),
+      borderColor: '#f87171',
+      backgroundColor: 'rgba(248,113,113,0.12)',
+      fill: true, tension: 0.3, pointRadius: 0, borderWidth: 1.5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' -$' + Math.abs(ctx.parsed.y).toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxTicksLimit: 12, maxRotation: 0}},
+      y: {ticks: {callback: v => '-$' + Math.abs(v).toFixed(0)}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Monthly P&L ──
+new Chart(document.getElementById('monthlyPnlChart'), {
+  type: 'bar',
+  data: {
+    labels: ["2026-02"],
+    datasets: [{
+      label: 'P&L ($)',
+      data: [481.41],
+      backgroundColor: ["rgba(52,211,153,0.8)"],
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' $' + ctx.parsed.y.toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 45}},
+      y: {ticks: {callback: v => '$' + v}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Monthly Trades ──
+new Chart(document.getElementById('monthlyTradesChart'), {
+  type: 'bar',
+  data: {
+    labels: ["2026-02"],
+    datasets: [{
+      label: 'Trades',
+      data: [53],
+      backgroundColor: 'rgba(96,165,250,0.7)',
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false}},
+    scales: {
+      x: {ticks: {maxRotation: 45}},
+      y: {ticks: {stepSize: 1}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Spread distribution ──
+new Chart(document.getElementById('spreadChart'), {
+  type: 'bar',
+  data: {
+    labels: ["0.85\u20130.86", "0.86\u20130.87", "0.87\u20130.88", "0.88\u20130.89", "0.89\u20130.90", "0.90\u20130.91", "0.91\u20130.92", "0.92\u20130.93", "0.93\u20130.94", "0.94\u20130.95", "0.95\u20130.96", "0.96\u20130.97", "0.97\u20130.98", "0.98\u20130.99", "0.99\u20131.00"],
+    datasets: [{
+      label: 'Nombre de trades',
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      backgroundColor: 'rgba(167,139,250,0.75)',
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {title: ctx => 'Spread: ' + ctx[0].label}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 60, font: {size: 10}}},
+      y: {grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Profit distribution ──
+new Chart(document.getElementById('profitHistChart'), {
+  type: 'bar',
+  data: {
+    labels: ["0.31", "3.36", "6.41", "9.46", "12.51", "15.56", "18.61", "21.66", "24.71", "27.76", "30.81", "33.86", "36.91", "39.96", "43.01"],
+    datasets: [{
+      label: 'Fréquence',
+      data: [23, 13, 5, 1, 2, 1, 1, 0, 1, 1, 0, 1, 2, 0, 2],
+      backgroundColor: (ctx) => {
+        const v = parseFloat(["0.31", "3.36", "6.41", "9.46", "12.51", "15.56", "18.61", "21.66", "24.71", "27.76", "30.81", "33.86", "36.91", "39.96", "43.01"][ctx.dataIndex] || 0);
+        return v >= 0 ? 'rgba(52,211,153,0.75)' : 'rgba(248,113,113,0.75)';
+      },
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {title: ctx => 'Profit: $' + ctx[0].label}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 60, font: {size: 10}}},
+      y: {grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Capital Scaling ──
+new Chart(document.getElementById('scalingChart'), {
+  type: 'bar',
+  data: {
+    labels: ["$100", "$500", "$1,000", "$5,000", "$10,000", "$25,000", "$50,000", "$100,000"],
+    datasets: [
+      {
+        label: 'Profit projeté ($)',
+        data: [4.81, 24.07, 48.14, 240.71, 481.41, 1203.53, 2065.05, 3354.68],
+        backgroundColor: 'rgba(52,211,153,0.75)',
+        borderRadius: 5, yAxisID: 'y'
+      },
+      {
+        label: 'ROI (%)',
+        data: [6.02, 6.02, 6.02, 6.02, 6.02, 6.02, 5.16, 4.2],
+        type: 'line',
+        borderColor: '#fbbf24',
+        backgroundColor: 'transparent',
+        pointBackgroundColor: '#fbbf24',
+        tension: 0.3, yAxisID: 'y2', borderWidth: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: {labels: {color: '#94a3b8', padding: 16}},
+      tooltip: {mode: 'index', intersect: false}
+    },
+    scales: {
+      x: {},
+      y: {
+        position: 'left',
+        ticks: {callback: v => '$' + v.toLocaleString('fr-FR', {maximumFractionDigits: 0})},
+        grid: {color: '#1e2130'}
+      },
+      y2: {
+        position: 'right',
+        ticks: {callback: v => v.toFixed(1) + '%'},
+        grid: {drawOnChartArea: false}
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
