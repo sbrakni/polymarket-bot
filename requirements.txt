@@ -1,0 +1,43 @@
+# ===========================================================================
+# POLYMARKET ARBITRAGE BOT — Dépendances Python
+# Installer avec: pip install -r requirements.txt
+# ===========================================================================
+
+# --- Polymarket CLOB Client (officiel) ---
+py-clob-client>=0.17.0
+
+# --- HTTP & WebSocket asynchrones ---
+aiohttp>=3.9.0
+websockets>=12.0
+
+# --- Framework Web (Dashboard) ---
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+
+# --- Calcul scientifique (backtesting, Kelly, optimisation) ---
+numpy>=1.26.0
+scipy>=1.12.0
+pandas>=2.1.0
+
+# --- Configuration ---
+python-dotenv>=1.0.0
+
+# --- Blockchain / Polygon ---
+web3>=6.15.0
+eth-account>=0.11.0
+
+# --- Notifications ---
+aiohttp>=3.9.0          # Déjà listée, utilisée pour Telegram aussi
+
+# --- Monitoring (optionnel) ---
+prometheus-client>=0.20.0
+
+# --- Tests ---
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-mock>=3.12.0
+
+# --- Utilitaires ---
+python-dateutil>=2.8.0
+ujson>=5.9.0             # JSON rapide
+colorlog>=6.8.0          # Logs colorés
