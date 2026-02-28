@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backtest — BINARY_ARB ( → )</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh}
+  a{color:#60a5fa}
+  /* ── Header ── */
+  .header{background:linear-gradient(135deg,#1e2130 0%,#1a1d27 100%);
+           border-bottom:1px solid #2d3748;padding:28px 32px 20px}
+  .header-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .header h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+  .header h1 span{color:#60a5fa}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;
+          border-radius:20px;font-size:.8rem;font-weight:600;letter-spacing:.02em}
+  .badge-green{background:#064e3b;color:#34d399;border:1px solid #065f46}
+  .badge-red{background:#7f1d1d;color:#f87171;border:1px solid #991b1b}
+  .badge-blue{background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8}
+  .badge-yellow{background:#451a03;color:#fbbf24;border:1px solid #92400e}
+  .header-meta{font-size:.8rem;color:#64748b;margin-top:6px}
+  /* ── KPI grid ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+             gap:16px;padding:24px 32px}
+  .kpi{background:#1a1d27;border:1px solid #2d3748;border-radius:14px;
+        padding:20px 22px;position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+                background:var(--accent,#3b82f6)}
+  .kpi-label{font-size:.72rem;color:#94a3b8;text-transform:uppercase;
+              letter-spacing:.06em;margin-bottom:6px}
+  .kpi-value{font-size:2rem;font-weight:800;line-height:1}
+  .kpi-sub{font-size:.78rem;color:#64748b;margin-top:4px}
+  .c-green{color:#34d399;--accent:#34d399}
+  .c-red{color:#f87171;--accent:#f87171}
+  .c-blue{color:#60a5fa;--accent:#60a5fa}
+  .c-yellow{color:#fbbf24;--accent:#fbbf24}
+  .c-purple{color:#a78bfa;--accent:#a78bfa}
+  .c-cyan{color:#22d3ee;--accent:#22d3ee}
+  /* ── Section ── */
+  .section{margin:0 32px 32px}
+  .section-title{font-size:1.05rem;font-weight:600;color:#94a3b8;
+                  margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .section-title::after{content:'';flex:1;height:1px;background:#2d3748}
+  /* ── Chart card ── */
+  .chart-card{background:#1a1d27;border:1px solid #2d3748;border-radius:14px;padding:24px}
+  .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:900px){.chart-row{grid-template-columns:1fr}}
+  /* ── Table ── */
+  .table-wrap{overflow-x:auto;border-radius:14px;border:1px solid #2d3748}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  thead th{background:#1e2130;padding:12px 16px;text-align:left;
+            font-size:.72rem;text-transform:uppercase;color:#64748b;
+            letter-spacing:.06em;white-space:nowrap}
+  tbody td{padding:10px 16px;border-bottom:1px solid #1e2130;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:#1e2130}
+  .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600}
+  .tag-green{background:#064e3b;color:#34d399}
+  .tag-red{background:#7f1d1d;color:#f87171}
+  .tag-blue{background:#1e3a5f;color:#93c5fd}
+  /* ── Scaling table ── */
+  .scale-row-highlight{background:#1e2130 !important}
+  /* ── Footer ── */
+  footer{text-align:center;padding:24px;color:#334155;font-size:.78rem;border-top:1px solid #1e2130;margin-top:20px}
+  /* ── Warn box ── */
+  .warn{background:#1c1a0a;border:1px solid #713f12;border-radius:10px;
+         padding:14px 18px;font-size:.82rem;color:#fbbf24;margin-bottom:24px}
+  .warn strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>📊 Backtest — <span>BINARY_ARB</span></h1>
+      <div class="header-meta">
+        Période : <strong></strong> → <strong></strong> &nbsp;|&nbsp;
+        Preset risque : <strong></strong> &nbsp;|&nbsp;
+        Généré le 28/02/2026 à 22:44
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="badge badge-green">
+        +$0.00 P&L
+      </span>
+      <span class="badge badge-green">
+        +0.0% ROI
+      </span>
+      <span class="badge badge-blue">
+        0 trades
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ KPIs ═══════════════════════ -->
+<div class="kpi-grid">
+  <div class="kpi c-green">
+    <div class="kpi-label">P&L Total</div>
+    <div class="kpi-value">+$0.00</div>
+    <div class="kpi-sub">Sur capital $10,000</div>
+  </div>
+  <div class="kpi c-blue">
+    <div class="kpi-label">ROI Période</div>
+    <div class="kpi-value">+0.0%</div>
+    <div class="kpi-sub"> → </div>
+  </div>
+  <div class="kpi c-cyan">
+    <div class="kpi-label">Trades exécutés</div>
+    <div class="kpi-value">0</div>
+    <div class="kpi-sub">sur 0 marchés scannés</div>
+  </div>
+  <div class="kpi c-red">
+    <div class="kpi-label">Win Rate</div>
+    <div class="kpi-value">0.0%</div>
+    <div class="kpi-sub">Arb binaire ≈ quasi-certitude</div>
+  </div>
+  <div class="kpi c-purple">
+    <div class="kpi-label">Sharpe Ratio</div>
+    <div class="kpi-value" style="color:#facc15">0.00</div>
+    <div class="kpi-sub">Correct (> 0)</div>
+  </div>
+  <div class="kpi c-red">
+    <div class="kpi-label">Max Drawdown</div>
+    <div class="kpi-value">-$0.00</div>
+    <div class="kpi-sub">Pire perte de creux à pic</div>
+  </div>
+  <div class="kpi c-yellow">
+    <div class="kpi-label">Profit Factor</div>
+    <div class="kpi-value">0.00x</div>
+    <div class="kpi-sub">Gains bruts / Pertes brutes</div>
+  </div>
+  <div class="kpi c-blue">
+    <div class="kpi-label">Profit moyen / trade</div>
+    <div class="kpi-value">$0.000</div>
+    <div class="kpi-sub">Frais payés : $0.00</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ EQUITY CURVE ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📈 Courbe des Capitaux (Cumulative P&L)</div>
+  <div class="chart-card">
+    <canvas id="equityChart" height="110"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DRAWDOWN ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📉 Drawdown (creux depuis le pic)</div>
+  <div class="chart-card">
+    <canvas id="drawdownChart" height="70"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════ MONTHLY P&L + TRADES ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📅 Performance Mensuelle</div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">P&L par mois ($)</div>
+      <canvas id="monthlyPnlChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">Nombre de trades par mois</div>
+      <canvas id="monthlyTradesChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DISTRIBUTIONS ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">🔍 Distributions</div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">
+        Distribution des spreads YES+NO au moment du trade
+      </div>
+      <canvas id="spreadChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">
+        Distribution des profits par trade ($)
+      </div>
+      <canvas id="profitHistChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCALING ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">💰 Scalabilité — Capital Investi vs Profit Projeté</div>
+  <div class="chart-card" style="margin-bottom:20px">
+    <canvas id="scalingChart" height="90"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Capital investi</th>
+          <th>Profit projeté</th>
+          <th>ROI estimé</th>
+          <th>Max Drawdown</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>$       100</strong></td>
+          <td style="color:#34d399"><strong>+$0.00</strong></td>
+          <td style="color:#34d399">+0.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$       500</strong></td>
+          <td style="color:#34d399"><strong>+$0.00</strong></td>
+          <td style="color:#34d399">+0.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$     1,000</strong></td>
+          <td style="color:#34d399"><strong>+$0.00</strong></td>
+          <td style="color:#34d399">+0.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$     5,000</strong></td>
+          <td style="color:#34d399"><strong>+$0.00</strong></td>
+          <td style="color:#34d399">+0.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr class="scale-row-highlight">
+          <td><strong>$    10,000</strong>&nbsp;★</td>
+          <td style="color:#34d399"><strong>+$0.00</strong></td>
+          <td style="color:#34d399">+0.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$    25,000</strong></td>
+          <td style="color:#34d399"><strong>+$0.00</strong></td>
+          <td style="color:#34d399">+0.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$    50,000</strong></td>
+          <td style="color:#34d399"><strong>+$0.00</strong></td>
+          <td style="color:#34d399">+0.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td><span style="color:#64748b;font-size:.8rem">Liquidité saturée — rendements réduits</span></td>
+        </tr>
+        <tr>
+          <td><strong>$   100,000</strong></td>
+          <td style="color:#34d399"><strong>+$0.00</strong></td>
+          <td style="color:#34d399">+0.0%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td><span style="color:#64748b;font-size:.8rem">Liquidité saturée — rendements réduits</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ AVERTISSEMENT ═══════════════════════ -->
+<div class="section">
+  <div class="warn">
+    <strong>⚠️ Avertissement :</strong>
+    Les performances passées ne garantissent pas les performances futures.
+    Ce backtest est une simulation sur données historiques réelles Polymarket, mais sans tenir compte
+    de la compétition entre bots, des changements de frais dynamiques, ou de la latence réelle d'exécution.
+    Toujours tester en <strong>DRY-RUN</strong> avant de déployer du capital réel.
+  </div>
+</div>
+
+<!-- ═══════════════════════ TRADES TABLE ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📋 Derniers Trades Simulés</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Date</th><th>Question (extrait)</th>
+          <th>Prix YES</th><th>Prix NO</th><th>Spread</th>
+          <th>Taille</th><th>Profit net</th><th>Résolution</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  Polymarket Arbitrage Bot — Rapport généré le 28/02/2026 à 22:44 &nbsp;|&nbsp;
+  Données : Polymarket Gamma API &nbsp;|&nbsp; ⚠️ Usage éducatif uniquement
+</footer>
+
+<script>
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = '#2d3748';
+Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+
+const eqDates  = [];
+const eqValues = [];
+const ddValues = [];
+
+// ── Equity Curve ──
+new Chart(document.getElementById('equityChart'), {
+  type: 'line',
+  data: {
+    labels: eqDates,
+    datasets: [{
+      label: 'P&L cumulatif ($)',
+      data: eqValues,
+      borderColor: '#34d399',
+      backgroundColor: (ctx) => {
+        const g = ctx.chart.ctx.createLinearGradient(0,0,0,300);
+        g.addColorStop(0, 'rgba(52,211,153,0.18)');
+        g.addColorStop(1, 'rgba(52,211,153,0.01)');
+        return g;
+      },
+      fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' $' + ctx.parsed.y.toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxTicksLimit: 12, maxRotation: 0}},
+      y: {
+        ticks: {callback: v => '$' + v.toLocaleString('fr-FR', {minimumFractionDigits:0})},
+        grid: {color: '#1e2130'}
+      }
+    }
+  }
+});
+
+// ── Drawdown ──
+new Chart(document.getElementById('drawdownChart'), {
+  type: 'line',
+  data: {
+    labels: eqDates,
+    datasets: [{
+      label: 'Drawdown ($)',
+      data: ddValues.map(v => -v),
+      borderColor: '#f87171',
+      backgroundColor: 'rgba(248,113,113,0.12)',
+      fill: true, tension: 0.3, pointRadius: 0, borderWidth: 1.5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' -$' + Math.abs(ctx.parsed.y).toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxTicksLimit: 12, maxRotation: 0}},
+      y: {ticks: {callback: v => '-$' + Math.abs(v).toFixed(0)}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Monthly P&L ──
+new Chart(document.getElementById('monthlyPnlChart'), {
+  type: 'bar',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'P&L ($)',
+      data: [],
+      backgroundColor: [],
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' $' + ctx.parsed.y.toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 45}},
+      y: {ticks: {callback: v => '$' + v}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Monthly Trades ──
+new Chart(document.getElementById('monthlyTradesChart'), {
+  type: 'bar',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'Trades',
+      data: [],
+      backgroundColor: 'rgba(96,165,250,0.7)',
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false}},
+    scales: {
+      x: {ticks: {maxRotation: 45}},
+      y: {ticks: {stepSize: 1}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Spread distribution ──
+new Chart(document.getElementById('spreadChart'), {
+  type: 'bar',
+  data: {
+    labels: ["0.85\u20130.86", "0.86\u20130.87", "0.87\u20130.88", "0.88\u20130.89", "0.89\u20130.90", "0.90\u20130.91", "0.91\u20130.92", "0.92\u20130.93", "0.93\u20130.94", "0.94\u20130.95", "0.95\u20130.96", "0.96\u20130.97", "0.97\u20130.98", "0.98\u20130.99", "0.99\u20131.00"],
+    datasets: [{
+      label: 'Nombre de trades',
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      backgroundColor: 'rgba(167,139,250,0.75)',
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {title: ctx => 'Spread: ' + ctx[0].label}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 60, font: {size: 10}}},
+      y: {grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Profit distribution ──
+new Chart(document.getElementById('profitHistChart'), {
+  type: 'bar',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'Fréquence',
+      data: [],
+      backgroundColor: (ctx) => {
+        const v = parseFloat([][ctx.dataIndex] || 0);
+        return v >= 0 ? 'rgba(52,211,153,0.75)' : 'rgba(248,113,113,0.75)';
+      },
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {title: ctx => 'Profit: $' + ctx[0].label}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 60, font: {size: 10}}},
+      y: {grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Capital Scaling ──
+new Chart(document.getElementById('scalingChart'), {
+  type: 'bar',
+  data: {
+    labels: ["$100", "$500", "$1,000", "$5,000", "$10,000", "$25,000", "$50,000", "$100,000"],
+    datasets: [
+      {
+        label: 'Profit projeté ($)',
+        data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        backgroundColor: 'rgba(52,211,153,0.75)',
+        borderRadius: 5, yAxisID: 'y'
+      },
+      {
+        label: 'ROI (%)',
+        data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        type: 'line',
+        borderColor: '#fbbf24',
+        backgroundColor: 'transparent',
+        pointBackgroundColor: '#fbbf24',
+        tension: 0.3, yAxisID: 'y2', borderWidth: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: {labels: {color: '#94a3b8', padding: 16}},
+      tooltip: {mode: 'index', intersect: false}
+    },
+    scales: {
+      x: {},
+      y: {
+        position: 'left',
+        ticks: {callback: v => '$' + v.toLocaleString('fr-FR', {maximumFractionDigits: 0})},
+        grid: {color: '#1e2130'}
+      },
+      y2: {
+        position: 'right',
+        ticks: {callback: v => v.toFixed(1) + '%'},
+        grid: {drawOnChartArea: false}
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

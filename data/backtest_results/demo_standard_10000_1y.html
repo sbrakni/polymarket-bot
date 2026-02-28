@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backtest — BINARY_ARB (2025-02-28 → 2026-02-28)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh}
+  a{color:#60a5fa}
+  /* ── Header ── */
+  .header{background:linear-gradient(135deg,#1e2130 0%,#1a1d27 100%);
+           border-bottom:1px solid #2d3748;padding:28px 32px 20px}
+  .header-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .header h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+  .header h1 span{color:#60a5fa}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;
+          border-radius:20px;font-size:.8rem;font-weight:600;letter-spacing:.02em}
+  .badge-green{background:#064e3b;color:#34d399;border:1px solid #065f46}
+  .badge-red{background:#7f1d1d;color:#f87171;border:1px solid #991b1b}
+  .badge-blue{background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8}
+  .badge-yellow{background:#451a03;color:#fbbf24;border:1px solid #92400e}
+  .header-meta{font-size:.8rem;color:#64748b;margin-top:6px}
+  /* ── KPI grid ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+             gap:16px;padding:24px 32px}
+  .kpi{background:#1a1d27;border:1px solid #2d3748;border-radius:14px;
+        padding:20px 22px;position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+                background:var(--accent,#3b82f6)}
+  .kpi-label{font-size:.72rem;color:#94a3b8;text-transform:uppercase;
+              letter-spacing:.06em;margin-bottom:6px}
+  .kpi-value{font-size:2rem;font-weight:800;line-height:1}
+  .kpi-sub{font-size:.78rem;color:#64748b;margin-top:4px}
+  .c-green{color:#34d399;--accent:#34d399}
+  .c-red{color:#f87171;--accent:#f87171}
+  .c-blue{color:#60a5fa;--accent:#60a5fa}
+  .c-yellow{color:#fbbf24;--accent:#fbbf24}
+  .c-purple{color:#a78bfa;--accent:#a78bfa}
+  .c-cyan{color:#22d3ee;--accent:#22d3ee}
+  /* ── Section ── */
+  .section{margin:0 32px 32px}
+  .section-title{font-size:1.05rem;font-weight:600;color:#94a3b8;
+                  margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .section-title::after{content:'';flex:1;height:1px;background:#2d3748}
+  /* ── Chart card ── */
+  .chart-card{background:#1a1d27;border:1px solid #2d3748;border-radius:14px;padding:24px}
+  .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:900px){.chart-row{grid-template-columns:1fr}}
+  /* ── Table ── */
+  .table-wrap{overflow-x:auto;border-radius:14px;border:1px solid #2d3748}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  thead th{background:#1e2130;padding:12px 16px;text-align:left;
+            font-size:.72rem;text-transform:uppercase;color:#64748b;
+            letter-spacing:.06em;white-space:nowrap}
+  tbody td{padding:10px 16px;border-bottom:1px solid #1e2130;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:#1e2130}
+  .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600}
+  .tag-green{background:#064e3b;color:#34d399}
+  .tag-red{background:#7f1d1d;color:#f87171}
+  .tag-blue{background:#1e3a5f;color:#93c5fd}
+  /* ── Scaling table ── */
+  .scale-row-highlight{background:#1e2130 !important}
+  /* ── Footer ── */
+  footer{text-align:center;padding:24px;color:#334155;font-size:.78rem;border-top:1px solid #1e2130;margin-top:20px}
+  /* ── Warn box ── */
+  .warn{background:#1c1a0a;border:1px solid #713f12;border-radius:10px;
+         padding:14px 18px;font-size:.82rem;color:#fbbf24;margin-bottom:24px}
+  .warn strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>📊 Backtest — <span>BINARY_ARB</span></h1>
+      <div class="header-meta">
+        Période : <strong>2025-02-28</strong> → <strong>2026-02-28</strong> &nbsp;|&nbsp;
+        Preset risque : <strong>standard_10000</strong> &nbsp;|&nbsp;
+        Généré le 28/02/2026 à 22:45
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="badge badge-green">
+        +$4,134.48 P&L
+      </span>
+      <span class="badge badge-green">
+        +51.7% ROI
+      </span>
+      <span class="badge badge-blue">
+        2,985 trades
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ KPIs ═══════════════════════ -->
+<div class="kpi-grid">
+  <div class="kpi c-green">
+    <div class="kpi-label">P&L Total</div>
+    <div class="kpi-value">+$4,134.48</div>
+    <div class="kpi-sub">Sur capital $10,000</div>
+  </div>
+  <div class="kpi c-blue">
+    <div class="kpi-label">ROI Période</div>
+    <div class="kpi-value">+51.7%</div>
+    <div class="kpi-sub">2025-02-28 → 2026-02-28</div>
+  </div>
+  <div class="kpi c-cyan">
+    <div class="kpi-label">Trades exécutés</div>
+    <div class="kpi-value">2,985</div>
+    <div class="kpi-sub">sur 35,820 marchés scannés</div>
+  </div>
+  <div class="kpi c-green">
+    <div class="kpi-label">Win Rate</div>
+    <div class="kpi-value">97.0%</div>
+    <div class="kpi-sub">Arb binaire ≈ quasi-certitude</div>
+  </div>
+  <div class="kpi c-purple">
+    <div class="kpi-label">Sharpe Ratio</div>
+    <div class="kpi-value" style="color:#34d399">32.63</div>
+    <div class="kpi-sub">Excellent (> 1)</div>
+  </div>
+  <div class="kpi c-red">
+    <div class="kpi-label">Max Drawdown</div>
+    <div class="kpi-value">-$0.46</div>
+    <div class="kpi-sub">Pire perte de creux à pic</div>
+  </div>
+  <div class="kpi c-yellow">
+    <div class="kpi-label">Profit Factor</div>
+    <div class="kpi-value">590.19x</div>
+    <div class="kpi-sub">Gains bruts / Pertes brutes</div>
+  </div>
+  <div class="kpi c-blue">
+    <div class="kpi-label">Profit moyen / trade</div>
+    <div class="kpi-value">$1.385</div>
+    <div class="kpi-sub">Frais payés : $20.73</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ EQUITY CURVE ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📈 Courbe des Capitaux (Cumulative P&L)</div>
+  <div class="chart-card">
+    <canvas id="equityChart" height="110"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DRAWDOWN ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📉 Drawdown (creux depuis le pic)</div>
+  <div class="chart-card">
+    <canvas id="drawdownChart" height="70"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════ MONTHLY P&L + TRADES ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📅 Performance Mensuelle</div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">P&L par mois ($)</div>
+      <canvas id="monthlyPnlChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">Nombre de trades par mois</div>
+      <canvas id="monthlyTradesChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DISTRIBUTIONS ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">🔍 Distributions</div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">
+        Distribution des spreads YES+NO au moment du trade
+      </div>
+      <canvas id="spreadChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">
+        Distribution des profits par trade ($)
+      </div>
+      <canvas id="profitHistChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCALING ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">💰 Scalabilité — Capital Investi vs Profit Projeté</div>
+  <div class="chart-card" style="margin-bottom:20px">
+    <canvas id="scalingChart" height="90"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Capital investi</th>
+          <th>Profit projeté</th>
+          <th>ROI estimé</th>
+          <th>Max Drawdown</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>$       100</strong></td>
+          <td style="color:#34d399"><strong>+$41.34</strong></td>
+          <td style="color:#34d399">+51.7%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$       500</strong></td>
+          <td style="color:#34d399"><strong>+$206.72</strong></td>
+          <td style="color:#34d399">+51.7%</td>
+          <td style="color:#f87171">-$0.02</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$     1,000</strong></td>
+          <td style="color:#34d399"><strong>+$413.45</strong></td>
+          <td style="color:#34d399">+51.7%</td>
+          <td style="color:#f87171">-$0.05</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$     5,000</strong></td>
+          <td style="color:#34d399"><strong>+$2,067.24</strong></td>
+          <td style="color:#34d399">+51.7%</td>
+          <td style="color:#f87171">-$0.23</td>
+          <td>—</td>
+        </tr>
+        <tr class="scale-row-highlight">
+          <td><strong>$    10,000</strong>&nbsp;★</td>
+          <td style="color:#34d399"><strong>+$4,134.48</strong></td>
+          <td style="color:#34d399">+51.7%</td>
+          <td style="color:#f87171">-$0.46</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$    25,000</strong></td>
+          <td style="color:#34d399"><strong>+$10,336.20</strong></td>
+          <td style="color:#34d399">+51.7%</td>
+          <td style="color:#f87171">-$1.15</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$    50,000</strong></td>
+          <td style="color:#34d399"><strong>+$17,735.21</strong></td>
+          <td style="color:#34d399">+44.3%</td>
+          <td style="color:#f87171">-$1.97</td>
+          <td><span style="color:#64748b;font-size:.8rem">Liquidité saturée — rendements réduits</span></td>
+        </tr>
+        <tr>
+          <td><strong>$   100,000</strong></td>
+          <td style="color:#34d399"><strong>+$28,810.93</strong></td>
+          <td style="color:#34d399">+36.0%</td>
+          <td style="color:#f87171">-$3.21</td>
+          <td><span style="color:#64748b;font-size:.8rem">Liquidité saturée — rendements réduits</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ AVERTISSEMENT ═══════════════════════ -->
+<div class="section">
+  <div class="warn">
+    <strong>⚠️ Avertissement :</strong>
+    Les performances passées ne garantissent pas les performances futures.
+    Ce backtest est une simulation sur données historiques réelles Polymarket, mais sans tenir compte
+    de la compétition entre bots, des changements de frais dynamiques, ou de la latence réelle d'exécution.
+    Toujours tester en <strong>DRY-RUN</strong> avant de déployer du capital réel.
+  </div>
+</div>
+
+<!-- ═══════════════════════ TRADES TABLE ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📋 Derniers Trades Simulés</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Date</th><th>Question (extrait)</th>
+          <th>Prix YES</th><th>Prix NO</th><th>Spread</th>
+          <th>Taille</th><th>Profit net</th><th>Résolution</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td style="color:#64748b">1</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Donald Trump win the New Hampshire primary?">Will Donald Trump win the New Hampshire primary?…</td>
+          <td>$0.4548</td>
+          <td>$0.4506</td>
+          <td style="color:#fbbf24">$0.9054</td>
+          <td>20</td>
+          <td class="c-green"><strong>+$1.8848</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">2</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.4566</td>
+          <td>$0.4948</td>
+          <td style="color:#94a3b8">$0.9514</td>
+          <td>19</td>
+          <td class="c-green"><strong>+$0.9162</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">3</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Sweden win against Denmark in handball?">Will Sweden win against Denmark in handball?…</td>
+          <td>$0.5397</td>
+          <td>$0.3703</td>
+          <td style="color:#fbbf24">$0.9100</td>
+          <td>19</td>
+          <td class="c-green"><strong>+$1.7031</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">4</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4391</td>
+          <td>$0.4665</td>
+          <td style="color:#fbbf24">$0.9056</td>
+          <td>19</td>
+          <td class="c-green"><strong>+$1.7867</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">5</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Sweden win against Denmark in handball?">Will Sweden win against Denmark in handball?…</td>
+          <td>$0.4228</td>
+          <td>$0.4535</td>
+          <td style="color:#fbbf24">$0.8763</td>
+          <td>22</td>
+          <td class="c-green"><strong>+$2.7137</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">6</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Cleveland Guardians win vs Chicago White Sox?">Will the Cleveland Guardians win vs Chicago White Sox?…</td>
+          <td>$0.4924</td>
+          <td>$0.4460</td>
+          <td style="color:#fbbf24">$0.9384</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$0.5510</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">7</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.5493</td>
+          <td>$0.4006</td>
+          <td style="color:#fbbf24">$0.9499</td>
+          <td>7</td>
+          <td class="c-green"><strong>+$0.3480</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">8</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.4735</td>
+          <td>$0.4003</td>
+          <td style="color:#fbbf24">$0.8738</td>
+          <td>21</td>
+          <td class="c-green"><strong>+$2.6429</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">9</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Cleveland Guardians win vs Chicago White Sox?">Will the Cleveland Guardians win vs Chicago White Sox?…</td>
+          <td>$0.5318</td>
+          <td>$0.3956</td>
+          <td style="color:#fbbf24">$0.9274</td>
+          <td>13</td>
+          <td class="c-green"><strong>+$0.9390</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">10</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Cleveland Guardians win vs Chicago White Sox?">Will the Cleveland Guardians win vs Chicago White Sox?…</td>
+          <td>$0.4488</td>
+          <td>$0.4467</td>
+          <td style="color:#fbbf24">$0.8955</td>
+          <td>34</td>
+          <td class="c-green"><strong>+$3.5408</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">11</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.5070</td>
+          <td>$0.4375</td>
+          <td style="color:#fbbf24">$0.9445</td>
+          <td>19</td>
+          <td class="c-green"><strong>+$1.0473</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">12</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.4633</td>
+          <td>$0.4747</td>
+          <td style="color:#fbbf24">$0.9380</td>
+          <td>13</td>
+          <td class="c-green"><strong>+$0.8011</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">13</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.4167</td>
+          <td>$0.5186</td>
+          <td style="color:#fbbf24">$0.9353</td>
+          <td>7</td>
+          <td class="c-green"><strong>+$0.4503</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">14</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Cleveland Guardians win vs Chicago White Sox?">Will the Cleveland Guardians win vs Chicago White Sox?…</td>
+          <td>$0.4676</td>
+          <td>$0.4523</td>
+          <td style="color:#fbbf24">$0.9199</td>
+          <td>20</td>
+          <td class="c-green"><strong>+$1.5946</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">15</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.4149</td>
+          <td>$0.5395</td>
+          <td style="color:#94a3b8">$0.9544</td>
+          <td>15</td>
+          <td class="c-green"><strong>+$0.6783</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">16</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the S&P 500 end 2024 above 5000?">Will the S&P 500 end 2024 above 5000?…</td>
+          <td>$0.4384</td>
+          <td>$0.4819</td>
+          <td style="color:#fbbf24">$0.9203</td>
+          <td>14</td>
+          <td class="c-green"><strong>+$1.1106</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">17</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.5448</td>
+          <td>$0.3815</td>
+          <td style="color:#fbbf24">$0.9263</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$0.8800</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">18</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.3839</td>
+          <td>$0.5625</td>
+          <td style="color:#fbbf24">$0.9464</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$0.6387</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">19</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.4398</td>
+          <td>$0.4592</td>
+          <td style="color:#fbbf24">$0.8990</td>
+          <td>35</td>
+          <td class="c-green"><strong>+$3.5224</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">20</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Celtics win the NBA Championship 2024?">Will the Celtics win the NBA Championship 2024?…</td>
+          <td>$0.5199</td>
+          <td>$0.4374</td>
+          <td style="color:#94a3b8">$0.9573</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$0.5078</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">21</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Sweden win against Denmark in handball?">Will Sweden win against Denmark in handball?…</td>
+          <td>$0.4215</td>
+          <td>$0.4584</td>
+          <td style="color:#fbbf24">$0.8799</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$1.0777</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">22</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.5714</td>
+          <td>$0.3830</td>
+          <td style="color:#94a3b8">$0.9544</td>
+          <td>15</td>
+          <td class="c-green"><strong>+$0.6783</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">23</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.4373</td>
+          <td>$0.5000</td>
+          <td style="color:#fbbf24">$0.9373</td>
+          <td>17</td>
+          <td class="c-green"><strong>+$1.0595</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">24</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.5415</td>
+          <td>$0.3885</td>
+          <td style="color:#fbbf24">$0.9300</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$0.6267</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">25</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.3806</td>
+          <td>$0.5126</td>
+          <td style="color:#fbbf24">$0.8932</td>
+          <td>19</td>
+          <td class="c-green"><strong>+$2.0224</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">26</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the S&P 500 end 2024 above 5000?">Will the S&P 500 end 2024 above 5000?…</td>
+          <td>$0.5170</td>
+          <td>$0.3953</td>
+          <td style="color:#fbbf24">$0.9123</td>
+          <td>20</td>
+          <td class="c-green"><strong>+$1.7467</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">27</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.5054</td>
+          <td>$0.3606</td>
+          <td style="color:#fbbf24">$0.8660</td>
+          <td>37</td>
+          <td class="c-green"><strong>+$4.9452</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">28</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the S&P 500 end 2024 above 5000?">Will the S&P 500 end 2024 above 5000?…</td>
+          <td>$0.4956</td>
+          <td>$0.3873</td>
+          <td style="color:#fbbf24">$0.8829</td>
+          <td>16</td>
+          <td class="c-green"><strong>+$1.8679</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">29</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Celtics win the NBA Championship 2024?">Will the Celtics win the NBA Championship 2024?…</td>
+          <td>$0.5409</td>
+          <td>$0.3675</td>
+          <td style="color:#fbbf24">$0.9084</td>
+          <td>11</td>
+          <td class="c-green"><strong>+$1.0036</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">30</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.5688</td>
+          <td>$0.3852</td>
+          <td style="color:#94a3b8">$0.9540</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$0.4106</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">31</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.4523</td>
+          <td>$0.4678</td>
+          <td style="color:#fbbf24">$0.9201</td>
+          <td>15</td>
+          <td class="c-green"><strong>+$1.1930</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">32</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.3693</td>
+          <td>$0.5252</td>
+          <td style="color:#fbbf24">$0.8945</td>
+          <td>23</td>
+          <td class="c-red"><strong>$-0.1532</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">33</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Cleveland Guardians win vs Chicago White Sox?">Will the Cleveland Guardians win vs Chicago White Sox?…</td>
+          <td>$0.3816</td>
+          <td>$0.5685</td>
+          <td style="color:#94a3b8">$0.9501</td>
+          <td>11</td>
+          <td class="c-green"><strong>+$0.5447</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">34</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Elon Musk post more than 50 tweets today?">Will Elon Musk post more than 50 tweets today?…</td>
+          <td>$0.4095</td>
+          <td>$0.5163</td>
+          <td style="color:#fbbf24">$0.9258</td>
+          <td>26</td>
+          <td class="c-green"><strong>+$1.9196</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">35</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.3678</td>
+          <td>$0.5395</td>
+          <td style="color:#fbbf24">$0.9073</td>
+          <td>21</td>
+          <td class="c-green"><strong>+$1.9391</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">36</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.4649</td>
+          <td>$0.4479</td>
+          <td style="color:#fbbf24">$0.9128</td>
+          <td>7</td>
+          <td class="c-green"><strong>+$0.6078</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">37</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.3768</td>
+          <td>$0.4896</td>
+          <td style="color:#fbbf24">$0.8664</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$1.1993</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">38</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.5423</td>
+          <td>$0.3937</td>
+          <td style="color:#fbbf24">$0.9360</td>
+          <td>22</td>
+          <td class="c-green"><strong>+$1.3998</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">39</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Nvidia's stock close above $600 this week?">Will Nvidia's stock close above $600 this week?…</td>
+          <td>$0.4572</td>
+          <td>$0.4906</td>
+          <td style="color:#fbbf24">$0.9478</td>
+          <td>16</td>
+          <td class="c-green"><strong>+$0.8291</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">40</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the S&P 500 end 2024 above 5000?">Will the S&P 500 end 2024 above 5000?…</td>
+          <td>$0.4772</td>
+          <td>$0.4437</td>
+          <td style="color:#fbbf24">$0.9209</td>
+          <td>19</td>
+          <td class="c-green"><strong>+$1.4959</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">41</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.4364</td>
+          <td>$0.5384</td>
+          <td style="color:#94a3b8">$0.9748</td>
+          <td>69</td>
+          <td class="c-green"><strong>+$1.7119</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">42</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.3563</td>
+          <td>$0.5136</td>
+          <td style="color:#fbbf24">$0.8699</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$1.5570</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">43</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Elon Musk post more than 50 tweets today?">Will Elon Musk post more than 50 tweets today?…</td>
+          <td>$0.4611</td>
+          <td>$0.4907</td>
+          <td style="color:#94a3b8">$0.9518</td>
+          <td>23</td>
+          <td class="c-green"><strong>+$1.0998</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">44</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.4158</td>
+          <td>$0.4639</td>
+          <td style="color:#fbbf24">$0.8797</td>
+          <td>7</td>
+          <td class="c-green"><strong>+$0.8396</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">45</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.3966</td>
+          <td>$0.5251</td>
+          <td style="color:#fbbf24">$0.9217</td>
+          <td>32</td>
+          <td class="c-green"><strong>+$2.4938</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">46</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the ECB cut rates in January 2024?">Will the ECB cut rates in January 2024?…</td>
+          <td>$0.5457</td>
+          <td>$0.3950</td>
+          <td style="color:#fbbf24">$0.9407</td>
+          <td>16</td>
+          <td class="c-green"><strong>+$0.9428</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">47</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.5090</td>
+          <td>$0.4251</td>
+          <td style="color:#fbbf24">$0.9341</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$0.5242</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">48</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4066</td>
+          <td>$0.5530</td>
+          <td style="color:#94a3b8">$0.9596</td>
+          <td>23</td>
+          <td class="c-green"><strong>+$0.9204</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">49</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.4971</td>
+          <td>$0.4171</td>
+          <td style="color:#fbbf24">$0.9142</td>
+          <td>15</td>
+          <td class="c-green"><strong>+$1.2815</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">50</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.5298</td>
+          <td>$0.4191</td>
+          <td style="color:#fbbf24">$0.9489</td>
+          <td>5</td>
+          <td class="c-red"><strong>$-0.0210</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">51</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.5299</td>
+          <td>$0.3563</td>
+          <td style="color:#fbbf24">$0.8862</td>
+          <td>11</td>
+          <td class="c-green"><strong>+$1.2479</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">52</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.5013</td>
+          <td>$0.4338</td>
+          <td style="color:#fbbf24">$0.9351</td>
+          <td>23</td>
+          <td class="c-green"><strong>+$1.4841</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">53</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Cleveland Guardians win vs Chicago White Sox?">Will the Cleveland Guardians win vs Chicago White Sox?…</td>
+          <td>$0.5546</td>
+          <td>$0.3934</td>
+          <td style="color:#fbbf24">$0.9480</td>
+          <td>6</td>
+          <td class="c-green"><strong>+$0.3097</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">54</td>
+          <td>2026-02-23</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.4588</td>
+          <td>$0.4239</td>
+          <td style="color:#fbbf24">$0.8827</td>
+          <td>51</td>
+          <td class="c-green"><strong>+$5.9643</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">55</td>
+          <td>2026-02-23</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.4774</td>
+          <td>$0.4614</td>
+          <td style="color:#fbbf24">$0.9388</td>
+          <td>13</td>
+          <td class="c-green"><strong>+$0.7907</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">56</td>
+          <td>2026-02-23</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.3685</td>
+          <td>$0.5521</td>
+          <td style="color:#fbbf24">$0.9206</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$0.6323</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">57</td>
+          <td>2026-02-23</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Sweden win against Denmark in handball?">Will Sweden win against Denmark in handball?…</td>
+          <td>$0.4075</td>
+          <td>$0.5225</td>
+          <td style="color:#fbbf24">$0.9300</td>
+          <td>10</td>
+          <td class="c-green"><strong>+$0.6963</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">58</td>
+          <td>2026-02-22</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Donald Trump win the New Hampshire primary?">Will Donald Trump win the New Hampshire primary?…</td>
+          <td>$0.5153</td>
+          <td>$0.3716</td>
+          <td style="color:#fbbf24">$0.8869</td>
+          <td>16</td>
+          <td class="c-green"><strong>+$1.8039</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">59</td>
+          <td>2026-02-22</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Nvidia's stock close above $600 this week?">Will Nvidia's stock close above $600 this week?…</td>
+          <td>$0.4372</td>
+          <td>$0.4705</td>
+          <td style="color:#fbbf24">$0.9077</td>
+          <td>29</td>
+          <td class="c-green"><strong>+$2.6662</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">60</td>
+          <td>2026-02-22</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Donald Trump win the New Hampshire primary?">Will Donald Trump win the New Hampshire primary?…</td>
+          <td>$0.5569</td>
+          <td>$0.3838</td>
+          <td style="color:#fbbf24">$0.9407</td>
+          <td>27</td>
+          <td class="c-green"><strong>+$1.5909</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">61</td>
+          <td>2026-02-22</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4707</td>
+          <td>$0.4572</td>
+          <td style="color:#fbbf24">$0.9279</td>
+          <td>26</td>
+          <td class="c-green"><strong>+$1.8649</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">62</td>
+          <td>2026-02-22</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Nvidia's stock close above $600 this week?">Will Nvidia's stock close above $600 this week?…</td>
+          <td>$0.4231</td>
+          <td>$0.5141</td>
+          <td style="color:#fbbf24">$0.9372</td>
+          <td>26</td>
+          <td class="c-green"><strong>+$1.6231</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">63</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.5002</td>
+          <td>$0.4165</td>
+          <td style="color:#fbbf24">$0.9167</td>
+          <td>17</td>
+          <td class="c-green"><strong>+$1.4099</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">64</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.4533</td>
+          <td>$0.4737</td>
+          <td style="color:#fbbf24">$0.9270</td>
+          <td>7</td>
+          <td class="c-green"><strong>+$0.5084</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">65</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.3940</td>
+          <td>$0.5565</td>
+          <td style="color:#94a3b8">$0.9505</td>
+          <td>20</td>
+          <td class="c-green"><strong>+$0.9824</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">66</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.4568</td>
+          <td>$0.4775</td>
+          <td style="color:#fbbf24">$0.9343</td>
+          <td>10</td>
+          <td class="c-green"><strong>+$0.6533</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">67</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.4529</td>
+          <td>$0.4784</td>
+          <td style="color:#fbbf24">$0.9313</td>
+          <td>37</td>
+          <td class="c-green"><strong>+$2.5281</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">68</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.4556</td>
+          <td>$0.4260</td>
+          <td style="color:#fbbf24">$0.8816</td>
+          <td>10</td>
+          <td class="c-green"><strong>+$1.1805</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">69</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.4202</td>
+          <td>$0.5419</td>
+          <td style="color:#94a3b8">$0.9621</td>
+          <td>7</td>
+          <td class="c-green"><strong>+$0.2626</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">70</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Donald Trump win the New Hampshire primary?">Will Donald Trump win the New Hampshire primary?…</td>
+          <td>$0.3698</td>
+          <td>$0.5434</td>
+          <td style="color:#fbbf24">$0.9132</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$0.7779</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">71</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Celtics win the NBA Championship 2024?">Will the Celtics win the NBA Championship 2024?…</td>
+          <td>$0.4860</td>
+          <td>$0.4703</td>
+          <td style="color:#94a3b8">$0.9563</td>
+          <td>6</td>
+          <td class="c-green"><strong>+$0.2599</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">72</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.3847</td>
+          <td>$0.5058</td>
+          <td style="color:#fbbf24">$0.8905</td>
+          <td>17</td>
+          <td class="c-green"><strong>+$1.8554</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">73</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.4549</td>
+          <td>$0.4927</td>
+          <td style="color:#fbbf24">$0.9476</td>
+          <td>11</td>
+          <td class="c-green"><strong>+$0.5722</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">74</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.3794</td>
+          <td>$0.5623</td>
+          <td style="color:#fbbf24">$0.9417</td>
+          <td>14</td>
+          <td class="c-green"><strong>+$0.8109</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">75</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Celtics win the NBA Championship 2024?">Will the Celtics win the NBA Championship 2024?…</td>
+          <td>$0.4342</td>
+          <td>$0.5041</td>
+          <td style="color:#fbbf24">$0.9383</td>
+          <td>11</td>
+          <td class="c-red"><strong>$-0.0090</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">76</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4885</td>
+          <td>$0.4259</td>
+          <td style="color:#fbbf24">$0.9144</td>
+          <td>32</td>
+          <td class="c-green"><strong>+$2.7275</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">77</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4879</td>
+          <td>$0.4190</td>
+          <td style="color:#fbbf24">$0.9069</td>
+          <td>9</td>
+          <td class="c-green"><strong>+$0.8346</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">78</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.4309</td>
+          <td>$0.4631</td>
+          <td style="color:#fbbf24">$0.8940</td>
+          <td>18</td>
+          <td class="c-green"><strong>+$1.9016</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">79</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will LeBron James score over 27.5 points tonight?">Will LeBron James score over 27.5 points tonight?…</td>
+          <td>$0.4971</td>
+          <td>$0.4215</td>
+          <td style="color:#fbbf24">$0.9186</td>
+          <td>13</td>
+          <td class="c-green"><strong>+$1.0534</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">80</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.3976</td>
+          <td>$0.5083</td>
+          <td style="color:#fbbf24">$0.9059</td>
+          <td>31</td>
+          <td class="c-green"><strong>+$2.9059</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">81</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.4825</td>
+          <td>$0.4554</td>
+          <td style="color:#fbbf24">$0.9379</td>
+          <td>13</td>
+          <td class="c-green"><strong>+$0.8024</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">82</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.4996</td>
+          <td>$0.4038</td>
+          <td style="color:#fbbf24">$0.9034</td>
+          <td>21</td>
+          <td class="c-green"><strong>+$2.0210</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">83</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.3739</td>
+          <td>$0.5597</td>
+          <td style="color:#fbbf24">$0.9336</td>
+          <td>16</td>
+          <td class="c-green"><strong>+$1.0564</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">84</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.4233</td>
+          <td>$0.5347</td>
+          <td style="color:#94a3b8">$0.9580</td>
+          <td>18</td>
+          <td class="c-green"><strong>+$0.7491</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">85</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.4260</td>
+          <td>$0.5376</td>
+          <td style="color:#94a3b8">$0.9636</td>
+          <td>7</td>
+          <td class="c-green"><strong>+$0.2521</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">86</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.5232</td>
+          <td>$0.4120</td>
+          <td style="color:#fbbf24">$0.9352</td>
+          <td>6</td>
+          <td class="c-green"><strong>+$0.3866</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">87</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.5057</td>
+          <td>$0.3650</td>
+          <td style="color:#fbbf24">$0.8707</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$1.5474</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">88</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.5007</td>
+          <td>$0.4035</td>
+          <td style="color:#fbbf24">$0.9042</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$0.7635</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">89</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.3882</td>
+          <td>$0.5618</td>
+          <td style="color:#94a3b8">$0.9500</td>
+          <td>5</td>
+          <td class="c-green"><strong>+$0.2481</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">90</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.4976</td>
+          <td>$0.4250</td>
+          <td style="color:#fbbf24">$0.9226</td>
+          <td>19</td>
+          <td class="c-green"><strong>+$1.4636</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">91</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Elon Musk post more than 50 tweets today?">Will Elon Musk post more than 50 tweets today?…</td>
+          <td>$0.5467</td>
+          <td>$0.4103</td>
+          <td style="color:#94a3b8">$0.9570</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$0.3409</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">92</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Sweden win against Denmark in handball?">Will Sweden win against Denmark in handball?…</td>
+          <td>$0.4234</td>
+          <td>$0.4716</td>
+          <td style="color:#fbbf24">$0.8950</td>
+          <td>34</td>
+          <td class="c-green"><strong>+$3.5578</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">93</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.5484</td>
+          <td>$0.3743</td>
+          <td style="color:#fbbf24">$0.9227</td>
+          <td>14</td>
+          <td class="c-green"><strong>+$1.0770</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">94</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.4969</td>
+          <td>$0.4129</td>
+          <td style="color:#fbbf24">$0.9098</td>
+          <td>18</td>
+          <td class="c-green"><strong>+$1.6170</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">95</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4212</td>
+          <td>$0.5442</td>
+          <td style="color:#94a3b8">$0.9654</td>
+          <td>22</td>
+          <td class="c-green"><strong>+$0.7527</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">96</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.4856</td>
+          <td>$0.4181</td>
+          <td style="color:#fbbf24">$0.9037</td>
+          <td>29</td>
+          <td class="c-green"><strong>+$2.7822</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">97</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.4812</td>
+          <td>$0.4523</td>
+          <td style="color:#fbbf24">$0.9335</td>
+          <td>39</td>
+          <td class="c-green"><strong>+$2.5789</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">98</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the ECB cut rates in January 2024?">Will the ECB cut rates in January 2024?…</td>
+          <td>$0.5186</td>
+          <td>$0.4131</td>
+          <td style="color:#fbbf24">$0.9317</td>
+          <td>60</td>
+          <td class="c-green"><strong>+$4.0756</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">99</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the ECB cut rates in January 2024?">Will the ECB cut rates in January 2024?…</td>
+          <td>$0.4821</td>
+          <td>$0.4424</td>
+          <td style="color:#fbbf24">$0.9245</td>
+          <td>8</td>
+          <td class="c-green"><strong>+$0.6010</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">100</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.4207</td>
+          <td>$0.5050</td>
+          <td style="color:#fbbf24">$0.9257</td>
+          <td>12</td>
+          <td class="c-green"><strong>+$0.8872</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  Polymarket Arbitrage Bot — Rapport généré le 28/02/2026 à 22:45 &nbsp;|&nbsp;
+  Données : Polymarket Gamma API &nbsp;|&nbsp; ⚠️ Usage éducatif uniquement
+</footer>
+
+<script>
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = '#2d3748';
+Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+
+const eqDates  = ["2025-03-04", "2025-03-05", "2025-03-06", "2025-03-06", "2025-03-07", "2025-03-07", "2025-03-08", "2025-03-08", "2025-03-09", "2025-03-10", "2025-03-10", "2025-03-11", "2025-03-11", "2025-03-11", "2025-03-12", "2025-03-12", "2025-03-13", "2025-03-13", "2025-03-13", "2025-03-13", "2025-03-14", "2025-03-14", "2025-03-14", "2025-03-14", "2025-03-15", "2025-03-15", "2025-03-15", "2025-03-16", "2025-03-16", "2025-03-17", "2025-03-18", "2025-03-18", "2025-03-18", "2025-03-18", "2025-03-18", "2025-03-18", "2025-03-19", "2025-03-19", "2025-03-19", "2025-03-19", "2025-03-20", "2025-03-20", "2025-03-20", "2025-03-20", "2025-03-20", "2025-03-21", "2025-03-21", "2025-03-21", "2025-03-21", "2025-03-22", "2025-03-22", "2025-03-22", "2025-03-22", "2025-03-22", "2025-03-23", "2025-03-23", "2025-03-23", "2025-03-23", "2025-03-23", "2025-03-24", "2025-03-24", "2025-03-24", "2025-03-24", "2025-03-24", "2025-03-24", "2025-03-25", "2025-03-25", "2025-03-25", "2025-03-25", "2025-03-25", "2025-03-25", "2025-03-25", "2025-03-25", "2025-03-25", "2025-03-25", "2025-03-26", "2025-03-26", "2025-03-26", "2025-03-26", "2025-03-26", "2025-03-26", "2025-03-26", "2025-03-26", "2025-03-27", "2025-03-27", "2025-03-27", "2025-03-27", "2025-03-27", "2025-03-27", "2025-03-27", "2025-03-28", "2025-03-28", "2025-03-28", "2025-03-28", "2025-03-28", "2025-03-28", "2025-03-28", "2025-03-28", "2025-03-28", "2025-03-29", "2025-03-29", "2025-03-29", "2025-03-29", "2025-03-29", "2025-03-29", "2025-03-29", "2025-03-29", "2025-03-30", "2025-03-30", "2025-03-30", "2025-03-30", "2025-03-31", "2025-03-31", "2025-03-31", "2025-03-31", "2025-04-01", "2025-04-01", "2025-04-01", "2025-04-01", "2025-04-01", "2025-04-01", "2025-04-01", "2025-04-01", "2025-04-01", "2025-04-01", "2025-04-02", "2025-04-02", "2025-04-02", "2025-04-02", "2025-04-02", "2025-04-02", "2025-04-02", "2025-04-02", "2025-04-02", "2025-04-02", "2025-04-02", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-03", "2025-04-04", "2025-04-04", "2025-04-04", "2025-04-04", "2025-04-04", "2025-04-04", "2025-04-04", "2025-04-04", "2025-04-04", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-06", "2025-04-06", "2025-04-06", "2025-04-06", "2025-04-06", "2025-04-07", "2025-04-07", "2025-04-07", "2025-04-07", "2025-04-07", "2025-04-07", "2025-04-07", "2025-04-08", "2025-04-08", "2025-04-08", "2025-04-08", "2025-04-08", "2025-04-08", "2025-04-08", "2025-04-09", "2025-04-09", "2025-04-09", "2025-04-09", "2025-04-09", "2025-04-09", "2025-04-09", "2025-04-09", "2025-04-09", "2025-04-09", "2025-04-10", "2025-04-10", "2025-04-10", "2025-04-10", "2025-04-11", "2025-04-11", "2025-04-11", "2025-04-11", "2025-04-11", "2025-04-11", "2025-04-11", "2025-04-11", "2025-04-11", "2025-04-11", "2025-04-12", "2025-04-12", "2025-04-12", "2025-04-12", "2025-04-12", "2025-04-12", "2025-04-12", "2025-04-12", "2025-04-12", "2025-04-13", "2025-04-13", "2025-04-13", "2025-04-13", "2025-04-14", "2025-04-14", "2025-04-14", "2025-04-14", "2025-04-14", "2025-04-14", "2025-04-15", "2025-04-15", "2025-04-15", "2025-04-15", "2025-04-15", "2025-04-15", "2025-04-15", "2025-04-15", "2025-04-15", "2025-04-15", "2025-04-16", "2025-04-16", "2025-04-16", "2025-04-16", "2025-04-16", "2025-04-16", "2025-04-16", "2025-04-16", "2025-04-16", "2025-04-16", "2025-04-16", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-18", "2025-04-18", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-19", "2025-04-20", "2025-04-20", "2025-04-20", "2025-04-20", "2025-04-20", "2025-04-20", "2025-04-21", "2025-04-21", "2025-04-21", "2025-04-21", "2025-04-21", "2025-04-21", "2025-04-22", "2025-04-22", "2025-04-22", "2025-04-22", "2025-04-22", "2025-04-22", "2025-04-22", "2025-04-23", "2025-04-23", "2025-04-23", "2025-04-23", "2025-04-23", "2025-04-23", "2025-04-23", "2025-04-23", "2025-04-23", "2025-04-23", "2025-04-24", "2025-04-24", "2025-04-24", "2025-04-24", "2025-04-24", "2025-04-24", "2025-04-24", "2025-04-24", "2025-04-24", "2025-04-24", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-25", "2025-04-26", "2025-04-26", "2025-04-26", "2025-04-26", "2025-04-26", "2025-04-26", "2025-04-26", "2025-04-27", "2025-04-27", "2025-04-27", "2025-04-27", "2025-04-28", "2025-04-28", "2025-04-28", "2025-04-28", "2025-04-28", "2025-04-29", "2025-04-29", "2025-04-29", "2025-04-29", "2025-04-29", "2025-04-29", "2025-04-29", "2025-04-29", "2025-04-29", "2025-04-30", "2025-04-30", "2025-04-30", "2025-04-30", "2025-04-30", "2025-04-30", "2025-04-30", "2025-04-30", "2025-05-01", "2025-05-01", "2025-05-01", "2025-05-01", "2025-05-01", "2025-05-01", "2025-05-01", "2025-05-01", "2025-05-01", "2025-05-01", "2025-05-01", "2025-05-02", "2025-05-02", "2025-05-02", "2025-05-02", "2025-05-02", "2025-05-02", "2025-05-02", "2025-05-03", "2025-05-03", "2025-05-03", "2025-05-03", "2025-05-03", "2025-05-03", "2025-05-03", "2025-05-03", "2025-05-03", "2025-05-03", "2025-05-03", "2025-05-04", "2025-05-04", "2025-05-04", "2025-05-04", "2025-05-05", "2025-05-05", "2025-05-05", "2025-05-05", "2025-05-05", "2025-05-05", "2025-05-05", "2025-05-06", "2025-05-06", "2025-05-06", "2025-05-06", "2025-05-06", "2025-05-06", "2025-05-06", "2025-05-06", "2025-05-07", "2025-05-07", "2025-05-07", "2025-05-07", "2025-05-07", "2025-05-07", "2025-05-07", "2025-05-07", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-09", "2025-05-09", "2025-05-09", "2025-05-09", "2025-05-09", "2025-05-09", "2025-05-10", "2025-05-10", "2025-05-10", "2025-05-10", "2025-05-10", "2025-05-10", "2025-05-11", "2025-05-11", "2025-05-11", "2025-05-11", "2025-05-11", "2025-05-11", "2025-05-12", "2025-05-12", "2025-05-12", "2025-05-12", "2025-05-12", "2025-05-13", "2025-05-13", "2025-05-13", "2025-05-13", "2025-05-13", "2025-05-13", "2025-05-13", "2025-05-13", "2025-05-13", "2025-05-14", "2025-05-14", "2025-05-14", "2025-05-14", "2025-05-14", "2025-05-14", "2025-05-14", "2025-05-14", "2025-05-14", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-16", "2025-05-16", "2025-05-16", "2025-05-16", "2025-05-16", "2025-05-16", "2025-05-16", "2025-05-16", "2025-05-16", "2025-05-17", "2025-05-17", "2025-05-17", "2025-05-17", "2025-05-17", "2025-05-17", "2025-05-17", "2025-05-17", "2025-05-18", "2025-05-18", "2025-05-18", "2025-05-18", "2025-05-18", "2025-05-19", "2025-05-19", "2025-05-19", "2025-05-19", "2025-05-19", "2025-05-19", "2025-05-19", "2025-05-19", "2025-05-20", "2025-05-20", "2025-05-20", "2025-05-20", "2025-05-20", "2025-05-20", "2025-05-20", "2025-05-20", "2025-05-20", "2025-05-21", "2025-05-21", "2025-05-21", "2025-05-21", "2025-05-21", "2025-05-21", "2025-05-21", "2025-05-21", "2025-05-21", "2025-05-21", "2025-05-21", "2025-05-22", "2025-05-22", "2025-05-22", "2025-05-22", "2025-05-22", "2025-05-23", "2025-05-23", "2025-05-23", "2025-05-23", "2025-05-23", "2025-05-23", "2025-05-23", "2025-05-23", "2025-05-23", "2025-05-24", "2025-05-24", "2025-05-24", "2025-05-24", "2025-05-24", "2025-05-24", "2025-05-24", "2025-05-25", "2025-05-25", "2025-05-25", "2025-05-25", "2025-05-25", "2025-05-25", "2025-05-25", "2025-05-26", "2025-05-26", "2025-05-26", "2025-05-26", "2025-05-26", "2025-05-26", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-27", "2025-05-28", "2025-05-28", "2025-05-28", "2025-05-28", "2025-05-28", "2025-05-28", "2025-05-28", "2025-05-28", "2025-05-28", "2025-05-28", "2025-05-29", "2025-05-29", "2025-05-29", "2025-05-29", "2025-05-29", "2025-05-29", "2025-05-29", "2025-05-29", "2025-05-29", "2025-05-29", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-30", "2025-05-31", "2025-05-31", "2025-05-31", "2025-05-31", "2025-05-31", "2025-05-31", "2025-05-31", "2025-05-31", "2025-05-31", "2025-05-31", "2025-06-01", "2025-06-01", "2025-06-01", "2025-06-01", "2025-06-02", "2025-06-02", "2025-06-02", "2025-06-02", "2025-06-02", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-03", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-04", "2025-06-05", "2025-06-05", "2025-06-05", "2025-06-05", "2025-06-05", "2025-06-05", "2025-06-05", "2025-06-05", "2025-06-05", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-07", "2025-06-07", "2025-06-07", "2025-06-07", "2025-06-07", "2025-06-07", "2025-06-07", "2025-06-07", "2025-06-08", "2025-06-08", "2025-06-08", "2025-06-09", "2025-06-09", "2025-06-09", "2025-06-09", "2025-06-09", "2025-06-09", "2025-06-09", "2025-06-10", "2025-06-10", "2025-06-10", "2025-06-10", "2025-06-10", "2025-06-10", "2025-06-10", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-11", "2025-06-12", "2025-06-12", "2025-06-12", "2025-06-12", "2025-06-12", "2025-06-12", "2025-06-12", "2025-06-12", "2025-06-12", "2025-06-12", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-14", "2025-06-14", "2025-06-14", "2025-06-14", "2025-06-14", "2025-06-14", "2025-06-14", "2025-06-14", "2025-06-14", "2025-06-15", "2025-06-15", "2025-06-15", "2025-06-15", "2025-06-16", "2025-06-16", "2025-06-16", "2025-06-16", "2025-06-16", "2025-06-16", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-17", "2025-06-18", "2025-06-18", "2025-06-18", "2025-06-18", "2025-06-18", "2025-06-18", "2025-06-18", "2025-06-18", "2025-06-18", "2025-06-18", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-21", "2025-06-21", "2025-06-21", "2025-06-21", "2025-06-21", "2025-06-21", "2025-06-21", "2025-06-21", "2025-06-21", "2025-06-21", "2025-06-22", "2025-06-22", "2025-06-22", "2025-06-22", "2025-06-22", "2025-06-22", "2025-06-23", "2025-06-23", "2025-06-23", "2025-06-23", "2025-06-23", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-25", "2025-06-25", "2025-06-25", "2025-06-25", "2025-06-25", "2025-06-25", "2025-06-25", "2025-06-25", "2025-06-25", "2025-06-25", "2025-06-26", "2025-06-26", "2025-06-26", "2025-06-26", "2025-06-26", "2025-06-26", "2025-06-26", "2025-06-26", "2025-06-26", "2025-06-27", "2025-06-27", "2025-06-27", "2025-06-27", "2025-06-27", "2025-06-27", "2025-06-27", "2025-06-27", "2025-06-28", "2025-06-28", "2025-06-28", "2025-06-28", "2025-06-28", "2025-06-28", "2025-06-28", "2025-06-28", "2025-06-28", "2025-06-28", "2025-06-29", "2025-06-29", "2025-06-29", "2025-06-29", "2025-06-30", "2025-06-30", "2025-06-30", "2025-06-30", "2025-06-30", "2025-06-30", "2025-06-30", "2025-06-30", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-02", "2025-07-02", "2025-07-02", "2025-07-02", "2025-07-02", "2025-07-02", "2025-07-02", "2025-07-02", "2025-07-02", "2025-07-03", "2025-07-03", "2025-07-03", "2025-07-03", "2025-07-03", "2025-07-03", "2025-07-03", "2025-07-04", "2025-07-04", "2025-07-04", "2025-07-04", "2025-07-04", "2025-07-05", "2025-07-05", "2025-07-05", "2025-07-05", "2025-07-05", "2025-07-05", "2025-07-05", "2025-07-05", "2025-07-06", "2025-07-06", "2025-07-06", "2025-07-06", "2025-07-06", "2025-07-06", "2025-07-06", "2025-07-07", "2025-07-07", "2025-07-07", "2025-07-07", "2025-07-07", "2025-07-07", "2025-07-08", "2025-07-08", "2025-07-08", "2025-07-08", "2025-07-08", "2025-07-08", "2025-07-08", "2025-07-08", "2025-07-08", "2025-07-08", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-09", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-10", "2025-07-11", "2025-07-11", "2025-07-11", "2025-07-11", "2025-07-11", "2025-07-11", "2025-07-11", "2025-07-12", "2025-07-12", "2025-07-12", "2025-07-12", "2025-07-12", "2025-07-12", "2025-07-12", "2025-07-12", "2025-07-12", "2025-07-13", "2025-07-13", "2025-07-13", "2025-07-13", "2025-07-13", "2025-07-13", "2025-07-13", "2025-07-13", "2025-07-14", "2025-07-14", "2025-07-14", "2025-07-14", "2025-07-14", "2025-07-14", "2025-07-14", "2025-07-15", "2025-07-15", "2025-07-15", "2025-07-15", "2025-07-15", "2025-07-15", "2025-07-15", "2025-07-15", "2025-07-15", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-17", "2025-07-18", "2025-07-18", "2025-07-18", "2025-07-18", "2025-07-18", "2025-07-18", "2025-07-18", "2025-07-18", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-20", "2025-07-20", "2025-07-20", "2025-07-20", "2025-07-20", "2025-07-21", "2025-07-21", "2025-07-21", "2025-07-21", "2025-07-21", "2025-07-22", "2025-07-22", "2025-07-22", "2025-07-22", "2025-07-22", "2025-07-22", "2025-07-22", "2025-07-22", "2025-07-22", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-24", "2025-07-24", "2025-07-24", "2025-07-24", "2025-07-24", "2025-07-24", "2025-07-24", "2025-07-24", "2025-07-25", "2025-07-25", "2025-07-25", "2025-07-25", "2025-07-25", "2025-07-25", "2025-07-25", "2025-07-25", "2025-07-25", "2025-07-25", "2025-07-26", "2025-07-26", "2025-07-26", "2025-07-26", "2025-07-26", "2025-07-26", "2025-07-26", "2025-07-26", "2025-07-26", "2025-07-26", "2025-07-26", "2025-07-27", "2025-07-27", "2025-07-27", "2025-07-27", "2025-07-28", "2025-07-28", "2025-07-28", "2025-07-28", "2025-07-28", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-29", "2025-07-30", "2025-07-30", "2025-07-30", "2025-07-30", "2025-07-30", "2025-07-30", "2025-07-30", "2025-07-30", "2025-07-31", "2025-07-31", "2025-07-31", "2025-07-31", "2025-07-31", "2025-07-31", "2025-07-31", "2025-07-31", "2025-07-31", "2025-07-31", "2025-07-31", "2025-08-01", "2025-08-01", "2025-08-01", "2025-08-01", "2025-08-01", "2025-08-01", "2025-08-02", "2025-08-02", "2025-08-02", "2025-08-02", "2025-08-02", "2025-08-02", "2025-08-02", "2025-08-02", "2025-08-02", "2025-08-02", "2025-08-03", "2025-08-03", "2025-08-03", "2025-08-03", "2025-08-03", "2025-08-03", "2025-08-03", "2025-08-03", "2025-08-04", "2025-08-04", "2025-08-04", "2025-08-04", "2025-08-04", "2025-08-04", "2025-08-04", "2025-08-05", "2025-08-05", "2025-08-05", "2025-08-05", "2025-08-05", "2025-08-05", "2025-08-05", "2025-08-05", "2025-08-05", "2025-08-05", "2025-08-06", "2025-08-06", "2025-08-06", "2025-08-06", "2025-08-06", "2025-08-06", "2025-08-06", "2025-08-06", "2025-08-06", "2025-08-06", "2025-08-07", "2025-08-07", "2025-08-07", "2025-08-07", "2025-08-07", "2025-08-07", "2025-08-07", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-10", "2025-08-10", "2025-08-10", "2025-08-10", "2025-08-11", "2025-08-11", "2025-08-11", "2025-08-11", "2025-08-11", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-13", "2025-08-14", "2025-08-14", "2025-08-14", "2025-08-14", "2025-08-14", "2025-08-15", "2025-08-15", "2025-08-15", "2025-08-15", "2025-08-15", "2025-08-15", "2025-08-15", "2025-08-15", "2025-08-16", "2025-08-16", "2025-08-16", "2025-08-16", "2025-08-16", "2025-08-16", "2025-08-16", "2025-08-16", "2025-08-17", "2025-08-17", "2025-08-18", "2025-08-18", "2025-08-18", "2025-08-18", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-19", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-20", "2025-08-21", "2025-08-21", "2025-08-21", "2025-08-21", "2025-08-21", "2025-08-21", "2025-08-21", "2025-08-21", "2025-08-21", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-22", "2025-08-23", "2025-08-23", "2025-08-23", "2025-08-23", "2025-08-23", "2025-08-23", "2025-08-23", "2025-08-23", "2025-08-23", "2025-08-23", "2025-08-24", "2025-08-24", "2025-08-24", "2025-08-24", "2025-08-24", "2025-08-24", "2025-08-24", "2025-08-24", "2025-08-25", "2025-08-25", "2025-08-25", "2025-08-25", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-26", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-28", "2025-08-28", "2025-08-28", "2025-08-28", "2025-08-28", "2025-08-28", "2025-08-28", "2025-08-28", "2025-08-28", "2025-08-28", "2025-08-29", "2025-08-29", "2025-08-29", "2025-08-29", "2025-08-29", "2025-08-29", "2025-08-29", "2025-08-29", "2025-08-29", "2025-08-29", "2025-08-29", "2025-08-30", "2025-08-30", "2025-08-30", "2025-08-30", "2025-08-30", "2025-08-30", "2025-08-30", "2025-08-30", "2025-08-31", "2025-08-31", "2025-08-31", "2025-08-31", "2025-08-31", "2025-08-31", "2025-08-31", "2025-09-01", "2025-09-01", "2025-09-01", "2025-09-01", "2025-09-01", "2025-09-02", "2025-09-02", "2025-09-02", "2025-09-02", "2025-09-02", "2025-09-02", "2025-09-02", "2025-09-02", "2025-09-02", "2025-09-02", "2025-09-03", "2025-09-03", "2025-09-03", "2025-09-03", "2025-09-03", "2025-09-03", "2025-09-03", "2025-09-03", "2025-09-03", "2025-09-03", "2025-09-03", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-05", "2025-09-05", "2025-09-05", "2025-09-05", "2025-09-05", "2025-09-05", "2025-09-05", "2025-09-05", "2025-09-05", "2025-09-06", "2025-09-06", "2025-09-06", "2025-09-06", "2025-09-06", "2025-09-06", "2025-09-06", "2025-09-07", "2025-09-07", "2025-09-07", "2025-09-07", "2025-09-07", "2025-09-07", "2025-09-08", "2025-09-08", "2025-09-08", "2025-09-08", "2025-09-08", "2025-09-09", "2025-09-09", "2025-09-09", "2025-09-09", "2025-09-09", "2025-09-09", "2025-09-09", "2025-09-09", "2025-09-09", "2025-09-10", "2025-09-10", "2025-09-10", "2025-09-10", "2025-09-10", "2025-09-10", "2025-09-10", "2025-09-10", "2025-09-11", "2025-09-11", "2025-09-11", "2025-09-11", "2025-09-11", "2025-09-11", "2025-09-11", "2025-09-11", "2025-09-11", "2025-09-11", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-13", "2025-09-13", "2025-09-13", "2025-09-13", "2025-09-13", "2025-09-14", "2025-09-14", "2025-09-14", "2025-09-14", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-16", "2025-09-16", "2025-09-16", "2025-09-16", "2025-09-16", "2025-09-16", "2025-09-16", "2025-09-16", "2025-09-16", "2025-09-16", "2025-09-16", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-17", "2025-09-18", "2025-09-18", "2025-09-18", "2025-09-18", "2025-09-18", "2025-09-19", "2025-09-19", "2025-09-19", "2025-09-19", "2025-09-19", "2025-09-19", "2025-09-19", "2025-09-19", "2025-09-20", "2025-09-20", "2025-09-20", "2025-09-20", "2025-09-20", "2025-09-20", "2025-09-20", "2025-09-20", "2025-09-20", "2025-09-20", "2025-09-21", "2025-09-21", "2025-09-21", "2025-09-21", "2025-09-21", "2025-09-21", "2025-09-22", "2025-09-22", "2025-09-22", "2025-09-22", "2025-09-23", "2025-09-23", "2025-09-23", "2025-09-23", "2025-09-23", "2025-09-23", "2025-09-23", "2025-09-23", "2025-09-23", "2025-09-23", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-25", "2025-09-25", "2025-09-25", "2025-09-25", "2025-09-25", "2025-09-25", "2025-09-25", "2025-09-25", "2025-09-25", "2025-09-25", "2025-09-26", "2025-09-26", "2025-09-26", "2025-09-26", "2025-09-26", "2025-09-26", "2025-09-26", "2025-09-26", "2025-09-26", "2025-09-26", "2025-09-27", "2025-09-27", "2025-09-27", "2025-09-27", "2025-09-27", "2025-09-28", "2025-09-28", "2025-09-28", "2025-09-28", "2025-09-28", "2025-09-28", "2025-09-28", "2025-09-29", "2025-09-29", "2025-09-29", "2025-09-29", "2025-09-29", "2025-09-30", "2025-09-30", "2025-09-30", "2025-09-30", "2025-09-30", "2025-09-30", "2025-09-30", "2025-09-30", "2025-09-30", "2025-09-30", "2025-10-01", "2025-10-01", "2025-10-01", "2025-10-01", "2025-10-01", "2025-10-01", "2025-10-01", "2025-10-01", "2025-10-02", "2025-10-02", "2025-10-02", "2025-10-02", "2025-10-02", "2025-10-02", "2025-10-02", "2025-10-02", "2025-10-02", "2025-10-03", "2025-10-03", "2025-10-03", "2025-10-03", "2025-10-03", "2025-10-03", "2025-10-03", "2025-10-03", "2025-10-04", "2025-10-04", "2025-10-04", "2025-10-04", "2025-10-04", "2025-10-04", "2025-10-04", "2025-10-04", "2025-10-04", "2025-10-04", "2025-10-04", "2025-10-05", "2025-10-05", "2025-10-05", "2025-10-05", "2025-10-05", "2025-10-06", "2025-10-07", "2025-10-07", "2025-10-07", "2025-10-07", "2025-10-07", "2025-10-07", "2025-10-07", "2025-10-07", "2025-10-07", "2025-10-08", "2025-10-08", "2025-10-08", "2025-10-08", "2025-10-08", "2025-10-08", "2025-10-08", "2025-10-08", "2025-10-08", "2025-10-08", "2025-10-09", "2025-10-09", "2025-10-09", "2025-10-09", "2025-10-09", "2025-10-09", "2025-10-09", "2025-10-10", "2025-10-10", "2025-10-10", "2025-10-10", "2025-10-10", "2025-10-10", "2025-10-10", "2025-10-10", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-12", "2025-10-12", "2025-10-12", "2025-10-12", "2025-10-12", "2025-10-13", "2025-10-13", "2025-10-13", "2025-10-13", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-15", "2025-10-15", "2025-10-15", "2025-10-15", "2025-10-15", "2025-10-15", "2025-10-15", "2025-10-15", "2025-10-15", "2025-10-15", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-16", "2025-10-17", "2025-10-17", "2025-10-17", "2025-10-17", "2025-10-17", "2025-10-17", "2025-10-17", "2025-10-17", "2025-10-17", "2025-10-17", "2025-10-17", "2025-10-18", "2025-10-18", "2025-10-18", "2025-10-18", "2025-10-18", "2025-10-18", "2025-10-18", "2025-10-18", "2025-10-18", "2025-10-19", "2025-10-19", "2025-10-19", "2025-10-19", "2025-10-19", "2025-10-19", "2025-10-19", "2025-10-20", "2025-10-20", "2025-10-20", "2025-10-20", "2025-10-20", "2025-10-20", "2025-10-20", "2025-10-20", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-22", "2025-10-22", "2025-10-22", "2025-10-22", "2025-10-22", "2025-10-22", "2025-10-22", "2025-10-22", "2025-10-22", "2025-10-23", "2025-10-23", "2025-10-23", "2025-10-23", "2025-10-23", "2025-10-23", "2025-10-23", "2025-10-23", "2025-10-23", "2025-10-23", "2025-10-24", "2025-10-24", "2025-10-24", "2025-10-24", "2025-10-24", "2025-10-24", "2025-10-24", "2025-10-24", "2025-10-24", "2025-10-24", "2025-10-25", "2025-10-25", "2025-10-25", "2025-10-25", "2025-10-25", "2025-10-25", "2025-10-25", "2025-10-25", "2025-10-25", "2025-10-26", "2025-10-26", "2025-10-26", "2025-10-26", "2025-10-26", "2025-10-26", "2025-10-27", "2025-10-27", "2025-10-27", "2025-10-28", "2025-10-28", "2025-10-28", "2025-10-28", "2025-10-28", "2025-10-28", "2025-10-28", "2025-10-28", "2025-10-28", "2025-10-29", "2025-10-29", "2025-10-29", "2025-10-29", "2025-10-29", "2025-10-29", "2025-10-29", "2025-10-30", "2025-10-30", "2025-10-30", "2025-10-30", "2025-10-30", "2025-10-30", "2025-10-30", "2025-10-30", "2025-10-30", "2025-10-30", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-10-31", "2025-11-01", "2025-11-01", "2025-11-01", "2025-11-02", "2025-11-02", "2025-11-02", "2025-11-02", "2025-11-02", "2025-11-02", "2025-11-02", "2025-11-03", "2025-11-03", "2025-11-03", "2025-11-03", "2025-11-03", "2025-11-03", "2025-11-03", "2025-11-03", "2025-11-04", "2025-11-04", "2025-11-04", "2025-11-04", "2025-11-04", "2025-11-04", "2025-11-04", "2025-11-04", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-06", "2025-11-06", "2025-11-06", "2025-11-06", "2025-11-06", "2025-11-06", "2025-11-06", "2025-11-06", "2025-11-06", "2025-11-06", "2025-11-07", "2025-11-07", "2025-11-07", "2025-11-07", "2025-11-07", "2025-11-07", "2025-11-07", "2025-11-08", "2025-11-08", "2025-11-08", "2025-11-08", "2025-11-08", "2025-11-08", "2025-11-08", "2025-11-08", "2025-11-08", "2025-11-08", "2025-11-09", "2025-11-09", "2025-11-09", "2025-11-09", "2025-11-09", "2025-11-10", "2025-11-10", "2025-11-10", "2025-11-10", "2025-11-10", "2025-11-10", "2025-11-11", "2025-11-11", "2025-11-11", "2025-11-11", "2025-11-11", "2025-11-11", "2025-11-11", "2025-11-11", "2025-11-11", "2025-11-11", "2025-11-12", "2025-11-12", "2025-11-12", "2025-11-12", "2025-11-12", "2025-11-12", "2025-11-12", "2025-11-12", "2025-11-12", "2025-11-13", "2025-11-13", "2025-11-13", "2025-11-13", "2025-11-13", "2025-11-13", "2025-11-13", "2025-11-13", "2025-11-13", "2025-11-14", "2025-11-14", "2025-11-14", "2025-11-14", "2025-11-14", "2025-11-14", "2025-11-14", "2025-11-14", "2025-11-14", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-16", "2025-11-16", "2025-11-16", "2025-11-16", "2025-11-17", "2025-11-17", "2025-11-17", "2025-11-17", "2025-11-17", "2025-11-18", "2025-11-18", "2025-11-18", "2025-11-18", "2025-11-18", "2025-11-18", "2025-11-18", "2025-11-18", "2025-11-18", "2025-11-18", "2025-11-18", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-19", "2025-11-20", "2025-11-20", "2025-11-20", "2025-11-20", "2025-11-20", "2025-11-20", "2025-11-20", "2025-11-20", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-22", "2025-11-22", "2025-11-22", "2025-11-22", "2025-11-22", "2025-11-22", "2025-11-22", "2025-11-22", "2025-11-22", "2025-11-22", "2025-11-22", "2025-11-23", "2025-11-23", "2025-11-23", "2025-11-23", "2025-11-23", "2025-11-24", "2025-11-24", "2025-11-24", "2025-11-24", "2025-11-24", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-26", "2025-11-26", "2025-11-26", "2025-11-26", "2025-11-26", "2025-11-26", "2025-11-26", "2025-11-26", "2025-11-26", "2025-11-26", "2025-11-26", "2025-11-27", "2025-11-27", "2025-11-27", "2025-11-27", "2025-11-27", "2025-11-27", "2025-11-27", "2025-11-27", "2025-11-27", "2025-11-28", "2025-11-28", "2025-11-28", "2025-11-28", "2025-11-28", "2025-11-28", "2025-11-28", "2025-11-28", "2025-11-29", "2025-11-29", "2025-11-29", "2025-11-29", "2025-11-29", "2025-11-29", "2025-11-29", "2025-11-29", "2025-11-29", "2025-11-29", "2025-11-29", "2025-11-30", "2025-11-30", "2025-11-30", "2025-11-30", "2025-11-30", "2025-11-30", "2025-11-30", "2025-11-30", "2025-12-01", "2025-12-01", "2025-12-01", "2025-12-01", "2025-12-01", "2025-12-02", "2025-12-02", "2025-12-02", "2025-12-02", "2025-12-02", "2025-12-02", "2025-12-02", "2025-12-02", "2025-12-03", "2025-12-03", "2025-12-03", "2025-12-03", "2025-12-03", "2025-12-03", "2025-12-03", "2025-12-03", "2025-12-03", "2025-12-03", "2025-12-03", "2025-12-04", "2025-12-04", "2025-12-04", "2025-12-04", "2025-12-04", "2025-12-04", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-07", "2025-12-07", "2025-12-07", "2025-12-07", "2025-12-08", "2025-12-08", "2025-12-08", "2025-12-08", "2025-12-08", "2025-12-08", "2025-12-09", "2025-12-09", "2025-12-09", "2025-12-09", "2025-12-09", "2025-12-09", "2025-12-09", "2025-12-10", "2025-12-10", "2025-12-10", "2025-12-10", "2025-12-10", "2025-12-10", "2025-12-10", "2025-12-10", "2025-12-10", "2025-12-10", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-11", "2025-12-12", "2025-12-12", "2025-12-12", "2025-12-12", "2025-12-12", "2025-12-12", "2025-12-13", "2025-12-13", "2025-12-13", "2025-12-13", "2025-12-13", "2025-12-13", "2025-12-13", "2025-12-13", "2025-12-14", "2025-12-14", "2025-12-14", "2025-12-14", "2025-12-15", "2025-12-15", "2025-12-15", "2025-12-15", "2025-12-15", "2025-12-15", "2025-12-16", "2025-12-16", "2025-12-16", "2025-12-16", "2025-12-16", "2025-12-16", "2025-12-16", "2025-12-16", "2025-12-17", "2025-12-17", "2025-12-17", "2025-12-17", "2025-12-17", "2025-12-17", "2025-12-17", "2025-12-17", "2025-12-18", "2025-12-18", "2025-12-18", "2025-12-18", "2025-12-18", "2025-12-18", "2025-12-18", "2025-12-18", "2025-12-18", "2025-12-18", "2025-12-19", "2025-12-19", "2025-12-19", "2025-12-19", "2025-12-19", "2025-12-19", "2025-12-19", "2025-12-19", "2025-12-19", "2025-12-19", "2025-12-19", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-21", "2025-12-21", "2025-12-21", "2025-12-21", "2025-12-21", "2025-12-21", "2025-12-22", "2025-12-22", "2025-12-22", "2025-12-22", "2025-12-22", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-23", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-24", "2025-12-25", "2025-12-25", "2025-12-25", "2025-12-25", "2025-12-25", "2025-12-25", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-28", "2025-12-28", "2025-12-28", "2025-12-28", "2025-12-28", "2025-12-28", "2025-12-28", "2025-12-28", "2025-12-29", "2025-12-29", "2025-12-29", "2025-12-29", "2025-12-29", "2025-12-29", "2025-12-29", "2025-12-30", "2025-12-30", "2025-12-30", "2025-12-30", "2025-12-30", "2025-12-30", "2025-12-30", "2025-12-30", "2025-12-30", "2025-12-31", "2025-12-31", "2025-12-31", "2025-12-31", "2025-12-31", "2025-12-31", "2025-12-31", "2025-12-31", "2026-01-01", "2026-01-01", "2026-01-01", "2026-01-01", "2026-01-01", "2026-01-01", "2026-01-01", "2026-01-01", "2026-01-01", "2026-01-01", "2026-01-02", "2026-01-02", "2026-01-02", "2026-01-02", "2026-01-02", "2026-01-02", "2026-01-02", "2026-01-02", "2026-01-03", "2026-01-03", "2026-01-03", "2026-01-03", "2026-01-03", "2026-01-03", "2026-01-04", "2026-01-04", "2026-01-04", "2026-01-04", "2026-01-04", "2026-01-04", "2026-01-04", "2026-01-04", "2026-01-05", "2026-01-05", "2026-01-05", "2026-01-05", "2026-01-05", "2026-01-05", "2026-01-06", "2026-01-06", "2026-01-06", "2026-01-06", "2026-01-06", "2026-01-06", "2026-01-06", "2026-01-06", "2026-01-07", "2026-01-07", "2026-01-07", "2026-01-07", "2026-01-07", "2026-01-07", "2026-01-07", "2026-01-07", "2026-01-07", "2026-01-07", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-09", "2026-01-09", "2026-01-09", "2026-01-09", "2026-01-10", "2026-01-10", "2026-01-10", "2026-01-10", "2026-01-10", "2026-01-10", "2026-01-10", "2026-01-11", "2026-01-11", "2026-01-11", "2026-01-11", "2026-01-11", "2026-01-11", "2026-01-11", "2026-01-12", "2026-01-12", "2026-01-12", "2026-01-12", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-14", "2026-01-14", "2026-01-14", "2026-01-14", "2026-01-14", "2026-01-14", "2026-01-14", "2026-01-14", "2026-01-14", "2026-01-15", "2026-01-15", "2026-01-15", "2026-01-15", "2026-01-15", "2026-01-15", "2026-01-15", "2026-01-15", "2026-01-15", "2026-01-16", "2026-01-16", "2026-01-16", "2026-01-16", "2026-01-16", "2026-01-16", "2026-01-16", "2026-01-17", "2026-01-17", "2026-01-17", "2026-01-17", "2026-01-17", "2026-01-17", "2026-01-17", "2026-01-17", "2026-01-17", "2026-01-17", "2026-01-18", "2026-01-18", "2026-01-18", "2026-01-18", "2026-01-18", "2026-01-18", "2026-01-18", "2026-01-19", "2026-01-19", "2026-01-19", "2026-01-19", "2026-01-19", "2026-01-20", "2026-01-20", "2026-01-20", "2026-01-20", "2026-01-20", "2026-01-20", "2026-01-20", "2026-01-20", "2026-01-21", "2026-01-21", "2026-01-21", "2026-01-21", "2026-01-21", "2026-01-21", "2026-01-21", "2026-01-21", "2026-01-21", "2026-01-21", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-22", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-24", "2026-01-24", "2026-01-24", "2026-01-24", "2026-01-24", "2026-01-24", "2026-01-24", "2026-01-24", "2026-01-24", "2026-01-24", "2026-01-25", "2026-01-25", "2026-01-25", "2026-01-25", "2026-01-26", "2026-01-26", "2026-01-26", "2026-01-26", "2026-01-27", "2026-01-27", "2026-01-27", "2026-01-27", "2026-01-27", "2026-01-27", "2026-01-27", "2026-01-27", "2026-01-27", "2026-01-28", "2026-01-28", "2026-01-28", "2026-01-28", "2026-01-28", "2026-01-28", "2026-01-28", "2026-01-28", "2026-01-29", "2026-01-29", "2026-01-29", "2026-01-29", "2026-01-29", "2026-01-29", "2026-01-29", "2026-01-29", "2026-01-29", "2026-01-29", "2026-01-30", "2026-01-30", "2026-01-30", "2026-01-30", "2026-01-30", "2026-01-30", "2026-01-30", "2026-01-30", "2026-01-30", "2026-01-30", "2026-01-30", "2026-01-31", "2026-01-31", "2026-01-31", "2026-01-31", "2026-01-31", "2026-01-31", "2026-01-31", "2026-01-31", "2026-01-31", "2026-01-31", "2026-01-31", "2026-02-01", "2026-02-01", "2026-02-01", "2026-02-01", "2026-02-02", "2026-02-02", "2026-02-02", "2026-02-02", "2026-02-02", "2026-02-03", "2026-02-03", "2026-02-03", "2026-02-03", "2026-02-03", "2026-02-03", "2026-02-03", "2026-02-03", "2026-02-03", "2026-02-03", "2026-02-04", "2026-02-04", "2026-02-04", "2026-02-04", "2026-02-04", "2026-02-04", "2026-02-04", "2026-02-04", "2026-02-04", "2026-02-04", "2026-02-05", "2026-02-05", "2026-02-05", "2026-02-05", "2026-02-05", "2026-02-05", "2026-02-05", "2026-02-05", "2026-02-05", "2026-02-05", "2026-02-05", "2026-02-06", "2026-02-06", "2026-02-06", "2026-02-06", "2026-02-06", "2026-02-06", "2026-02-07", "2026-02-07", "2026-02-07", "2026-02-07", "2026-02-07", "2026-02-07", "2026-02-07", "2026-02-07", "2026-02-07", "2026-02-08", "2026-02-08", "2026-02-08", "2026-02-08", "2026-02-08", "2026-02-09", "2026-02-09", "2026-02-09", "2026-02-09", "2026-02-09", "2026-02-09", "2026-02-09", "2026-02-09", "2026-02-09", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-11", "2026-02-12", "2026-02-12", "2026-02-12", "2026-02-12", "2026-02-12", "2026-02-12", "2026-02-12", "2026-02-12", "2026-02-12", "2026-02-13", "2026-02-13", "2026-02-13", "2026-02-13", "2026-02-13", "2026-02-13", "2026-02-13", "2026-02-13", "2026-02-13", "2026-02-13", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-15", "2026-02-15", "2026-02-15", "2026-02-15", "2026-02-15", "2026-02-15", "2026-02-16", "2026-02-16", "2026-02-16", "2026-02-16", "2026-02-16", "2026-02-16", "2026-02-16", "2026-02-16", "2026-02-17", "2026-02-17", "2026-02-17", "2026-02-17", "2026-02-17", "2026-02-17", "2026-02-17", "2026-02-17", "2026-02-17", "2026-02-17", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-19", "2026-02-19", "2026-02-19", "2026-02-19", "2026-02-19", "2026-02-19", "2026-02-19", "2026-02-19", "2026-02-19", "2026-02-20", "2026-02-20", "2026-02-20", "2026-02-20", "2026-02-20", "2026-02-20", "2026-02-20", "2026-02-20", "2026-02-20", "2026-02-20", "2026-02-21", "2026-02-21", "2026-02-21", "2026-02-21", "2026-02-21", "2026-02-21", "2026-02-21", "2026-02-21", "2026-02-22", "2026-02-22", "2026-02-22", "2026-02-22", "2026-02-22", "2026-02-23", "2026-02-23", "2026-02-23", "2026-02-23", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-25", "2026-02-25", "2026-02-25", "2026-02-25", "2026-02-25", "2026-02-25", "2026-02-25", "2026-02-25", "2026-02-25", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-26", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-27", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28", "2026-02-28"];
+const eqValues = [0.4454, 2.2436, 3.0207, 3.891, 4.5693, 5.5601, 6.7906, 7.1849, 7.539, 8.7815, 9.4646, 10.537, 12.3497, 13.1948, 15.3099, 16.7145, 17.2547, 18.3636, 18.5517, 18.9271, 19.9887, 22.291, 22.6521, 25.0408, 26.9904, 27.958, 29.8362, 30.7134, 32.4091, 36.2084, 40.6757, 41.4704, 43.7775, 43.9435, 44.3099, 45.6124, 48.4836, 49.3395, 50.3143, 51.7973, 52.9234, 54.9626, 57.7525, 58.3941, 60.4631, 60.9001, 61.9229, 62.6957, 63.7037, 64.2103, 65.3448, 67.4281, 69.8227, 70.9286, 73.3749, 73.8206, 74.0591, 74.8992, 75.6597, 76.5553, 77.2806, 78.4977, 79.7309, 82.0775, 84.591, 85.5858, 86.7395, 89.1897, 91.3885, 93.0524, 94.981, 96.7131, 97.6303, 99.1289, 99.5395, 100.8975, 103.2644, 104.3373, 105.2353, 106.4433, 108.608, 108.9737, 109.9725, 111.1365, 111.3854, 111.7654, 112.9083, 113.5558, 114.1983, 114.9123, 116.8679, 118.3391, 118.9601, 125.642, 127.6609, 128.7129, 129.566, 129.6797, 130.9133, 131.5748, 132.5352, 133.5796, 136.5688, 139.0339, 139.8724, 139.8153, 141.4207, 142.3437, 146.785, 149.2241, 150.4454, 152.0877, 153.1297, 153.6752, 153.9579, 154.7448, 157.5427, 157.9489, 159.279, 161.6283, 161.9244, 163.4142, 163.7407, 164.9204, 166.0861, 167.4739, 168.2134, 168.6041, 169.28, 174.1117, 175.5347, 175.846, 176.8864, 177.6661, 179.0023, 180.2052, 184.076, 186.5518, 186.7811, 187.9282, 189.3274, 189.9668, 191.4038, 192.0809, 195.949, 196.2461, 201.3169, 206.594, 207.047, 208.131, 212.2326, 212.4227, 214.0503, 215.756, 216.7788, 216.9376, 217.1747, 218.6473, 220.1545, 222.2013, 223.1235, 223.7213, 225.2613, 225.6201, 226.985, 228.1901, 229.052, 231.5478, 232.4073, 235.3093, 236.4185, 236.3535, 239.9369, 240.7823, 241.9363, 242.9143, 243.285, 244.568, 245.1312, 249.1648, 251.0556, 252.2258, 252.7045, 253.5855, 254.0609, 256.6737, 257.7312, 258.1087, 259.9443, 260.9317, 261.3379, 263.5675, 264.2854, 265.4543, 266.5808, 268.6633, 270.5026, 271.2021, 273.8702, 274.7665, 276.3011, 277.0674, 279.6383, 280.0606, 284.8565, 285.9602, 287.0096, 289.4066, 289.7082, 291.7474, 293.2032, 295.6208, 296.702, 297.8657, 299.4371, 301.0845, 302.8123, 303.5266, 304.553, 305.9924, 307.3561, 308.0812, 308.9712, 313.439, 315.5248, 316.4268, 317.8029, 318.2766, 319.4838, 319.8039, 320.5226, 321.4954, 321.3075, 322.4735, 323.0989, 324.7934, 325.9533, 326.2702, 326.7695, 328.4907, 329.6546, 331.5097, 332.639, 333.8115, 335.0444, 336.1726, 338.3493, 339.979, 340.9132, 341.8604, 343.9668, 345.0937, 346.4302, 349.989, 350.8538, 354.0331, 356.64, 357.546, 359.3815, 360.9994, 361.8734, 361.7622, 362.3034, 362.4613, 366.1528, 366.9064, 367.5983, 368.7378, 368.7017, 370.9626, 371.8183, 374.1342, 375.025, 376.5988, 378.325, 379.2524, 380.1276, 380.8657, 381.7032, 382.9804, 383.4288, 384.8676, 385.1375, 386.6249, 387.2351, 387.195, 387.4705, 388.7644, 390.9991, 392.0498, 393.8455, 394.3047, 396.1606, 397.4459, 398.0495, 398.4589, 399.9225, 403.5744, 404.6908, 404.6797, 405.5094, 405.9132, 407.8273, 408.6868, 408.9849, 409.5802, 410.3855, 411.5564, 411.8349, 412.6167, 412.9486, 413.6947, 414.7715, 414.7293, 416.0603, 417.9355, 418.7748, 424.6684, 431.021, 433.8221, 434.7165, 435.1775, 435.6807, 436.2865, 437.1048, 437.3845, 438.2548, 440.9828, 441.5286, 442.2669, 443.0867, 444.2863, 446.1624, 447.528, 451.9848, 453.7561, 455.7771, 457.3777, 458.088, 459.3937, 459.6542, 460.627, 462.3077, 463.8608, 464.337, 465.7425, 466.9494, 468.9716, 469.7195, 471.9074, 473.6423, 474.1129, 477.1261, 478.1156, 478.8911, 479.5494, 480.4332, 482.1307, 485.0344, 486.1208, 489.4927, 491.4281, 491.2925, 492.0524, 492.9838, 493.1786, 493.8429, 495.8217, 496.4409, 501.5226, 502.8218, 506.3932, 507.7732, 509.7126, 511.625, 512.4485, 513.2463, 515.08, 517.2013, 518.3887, 520.1794, 520.6157, 521.7394, 522.9783, 525.0767, 527.0171, 528.5801, 529.1747, 529.681, 531.5056, 534.4009, 535.0186, 536.036, 537.7677, 539.5609, 542.0291, 542.5117, 544.2827, 545.0772, 546.2459, 546.6997, 551.0821, 554.5815, 555.794, 560.0269, 562.1538, 563.1254, 563.3295, 564.8541, 566.3139, 566.9171, 568.3712, 570.3558, 570.9511, 572.8475, 575.8495, 575.7789, 577.0884, 578.5216, 579.3643, 579.3399, 583.4745, 584.7466, 585.0017, 587.8432, 591.1778, 594.9777, 594.8926, 595.3814, 596.3298, 597.8842, 599.254, 599.8262, 600.7646, 601.1808, 603.028, 604.1451, 606.1922, 608.4611, 609.4605, 609.8158, 610.8844, 614.0987, 618.1777, 621.0769, 622.3162, 624.1914, 624.3949, 625.1628, 626.116, 626.6355, 628.5683, 629.1765, 630.1168, 630.7, 631.9855, 633.012, 633.8628, 636.1843, 638.1179, 639.1361, 639.6743, 641.385, 643.4683, 645.4591, 646.4147, 648.3251, 650.1094, 651.6868, 652.7822, 653.5613, 657.5443, 659.3898, 660.2493, 661.0603, 661.4805, 663.0125, 664.5883, 667.1243, 667.9688, 669.229, 669.6282, 671.8141, 672.8005, 673.5939, 676.6695, 677.5308, 678.3396, 678.2625, 678.9443, 679.6684, 681.1747, 681.6803, 682.988, 684.2233, 685.6231, 687.0781, 687.8824, 690.2945, 693.0781, 693.8644, 694.7378, 696.7462, 697.4085, 698.1099, 700.4831, 700.7456, 701.621, 702.2792, 702.1968, 703.8535, 705.4742, 705.9376, 707.0645, 709.1362, 709.9789, 711.7922, 714.8734, 715.5549, 717.5861, 718.1113, 718.708, 719.306, 720.2249, 720.9222, 721.6905, 723.2784, 723.8522, 726.5155, 727.0443, 730.6791, 732.5623, 735.8396, 736.4516, 737.2484, 742.8058, 744.367, 744.8523, 745.3259, 751.3952, 753.7516, 755.2354, 755.6656, 757.4442, 758.9249, 760.5044, 761.7114, 762.0205, 761.8865, 763.084, 763.7043, 764.5979, 765.8444, 766.2871, 768.2589, 768.6531, 769.9228, 772.3825, 776.2159, 778.4056, 779.2483, 780.6389, 781.5769, 781.759, 783.4445, 785.13, 785.528, 786.6898, 788.0622, 788.7285, 791.0757, 792.5674, 794.3897, 794.7895, 796.1454, 797.7931, 799.2673, 800.5821, 803.2918, 809.6384, 813.4953, 813.8747, 814.0731, 816.5833, 818.05, 819.2869, 820.06, 820.2776, 823.8275, 824.2723, 825.2647, 829.8601, 830.8693, 833.3607, 833.9549, 834.3538, 835.157, 836.4439, 836.3197, 837.4827, 839.4923, 840.4294, 841.0513, 841.8216, 844.389, 845.4834, 846.3546, 847.5567, 848.9192, 849.9948, 852.1685, 853.2117, 853.7474, 855.1725, 856.3794, 856.9202, 857.5342, 857.9284, 859.5551, 861.5035, 862.7724, 866.1185, 868.0107, 868.6974, 871.4525, 871.9295, 873.1324, 875.3278, 875.6591, 877.2297, 877.5393, 878.1173, 879.3876, 883.6442, 886.3381, 886.0217, 888.1835, 889.0142, 890.0406, 893.3238, 896.8255, 898.4516, 899.9129, 900.2746, 901.3134, 901.2629, 907.4534, 910.6803, 912.4938, 912.9204, 915.2593, 915.7075, 916.8104, 917.9755, 918.77, 919.3042, 919.2519, 920.3674, 921.6575, 922.1221, 924.5556, 926.3143, 929.2187, 931.6317, 932.7281, 934.7161, 937.5784, 944.049, 946.7405, 947.3588, 948.99, 951.5586, 952.8191, 952.9446, 953.8842, 954.6531, 955.1867, 955.8238, 955.3625, 955.9776, 956.8079, 957.4141, 961.9295, 962.4967, 963.1369, 969.3138, 970.9753, 971.3925, 972.589, 973.3003, 976.1688, 977.3726, 978.6989, 979.0506, 980.0898, 980.2704, 981.3095, 982.0294, 982.7759, 983.4296, 983.9898, 984.7839, 986.5668, 986.9555, 987.2958, 988.9619, 990.399, 991.2982, 993.6091, 997.3926, 998.5307, 998.8314, 999.6234, 1000.8993, 1001.6583, 1002.6316, 1002.5971, 1003.172, 1003.7554, 1004.5207, 1006.1699, 1006.7281, 1008.6964, 1010.4491, 1011.9512, 1012.7607, 1013.7067, 1016.9398, 1017.8041, 1020.155, 1020.9169, 1022.2962, 1023.7224, 1024.6972, 1026.3999, 1028.3102, 1029.922, 1030.8882, 1033.7846, 1035.4287, 1037.095, 1037.3987, 1039.2348, 1041.4554, 1042.6124, 1045.8907, 1047.7975, 1049.8731, 1049.7838, 1052.1179, 1052.2964, 1052.7222, 1054.7389, 1055.9674, 1060.1649, 1061.391, 1062.9996, 1063.938, 1064.5142, 1064.9499, 1065.2296, 1064.9853, 1066.4907, 1067.1047, 1069.3956, 1070.1591, 1071.2725, 1072.6631, 1073.3574, 1074.6605, 1075.5996, 1076.7893, 1079.7317, 1080.9474, 1082.2969, 1085.8583, 1087.9528, 1088.3946, 1088.8456, 1089.2958, 1093.6537, 1096.2336, 1096.6766, 1097.6703, 1098.6577, 1099.3264, 1100.0667, 1101.0261, 1101.3468, 1102.5719, 1103.373, 1105.0102, 1107.368, 1108.3637, 1109.6256, 1109.9939, 1110.5107, 1111.7334, 1124.1314, 1125.4135, 1127.4611, 1129.2093, 1134.6807, 1135.1494, 1137.8917, 1140.3185, 1141.6985, 1142.592, 1144.9129, 1145.8283, 1148.8395, 1150.2402, 1151.1206, 1151.9437, 1153.3903, 1153.656, 1154.1169, 1154.6472, 1154.9329, 1155.8853, 1156.5676, 1157.4962, 1158.0618, 1158.8517, 1160.0582, 1161.0222, 1161.7545, 1163.4004, 1164.3248, 1164.6281, 1166.4834, 1168.1221, 1169.6655, 1170.4846, 1171.7006, 1173.3028, 1174.5568, 1176.4526, 1177.1515, 1177.1448, 1176.9647, 1177.4161, 1178.3705, 1179.0001, 1180.1598, 1181.1218, 1182.4369, 1184.7546, 1185.824, 1187.9537, 1188.7353, 1189.6046, 1193.0302, 1193.4639, 1194.0872, 1195.0656, 1196.058, 1196.4191, 1198.7594, 1201.2139, 1202.0134, 1203.9275, 1206.2804, 1207.5909, 1208.4863, 1210.021, 1211.1835, 1213.6243, 1214.8488, 1215.3098, 1216.4262, 1217.2468, 1217.7062, 1219.7338, 1221.8346, 1224.0892, 1226.1232, 1226.9685, 1228.6233, 1229.286, 1230.0351, 1232.7191, 1233.6477, 1234.323, 1235.9932, 1235.8673, 1236.7829, 1240.7085, 1243.2043, 1245.3131, 1246.0667, 1246.2793, 1247.6357, 1248.4253, 1250.1772, 1251.5701, 1253.1142, 1255.211, 1255.8182, 1256.4202, 1256.7213, 1258.3516, 1258.6632, 1258.8533, 1259.2194, 1259.5324, 1259.8367, 1260.7713, 1262.003, 1262.9166, 1265.7655, 1266.3267, 1266.8837, 1268.098, 1269.3939, 1270.6077, 1272.3184, 1272.6972, 1277.0838, 1279.7225, 1280.4653, 1280.7798, 1281.0574, 1282.1793, 1283.0272, 1284.1331, 1284.6052, 1285.6184, 1286.1324, 1287.047, 1287.6731, 1288.7907, 1290.7627, 1291.1709, 1292.4178, 1292.8132, 1295.1451, 1297.7321, 1298.8392, 1300.8575, 1304.3834, 1306.8219, 1310.4954, 1312.0836, 1313.5185, 1315.6008, 1315.8997, 1318.4099, 1319.9891, 1320.6569, 1321.8508, 1322.5423, 1324.163, 1324.8605, 1325.9234, 1327.1167, 1330.9228, 1332.1273, 1335.3254, 1336.812, 1338.9047, 1339.6295, 1340.5528, 1341.2923, 1342.6058, 1345.062, 1345.8983, 1347.643, 1348.4693, 1349.3598, 1349.5899, 1350.0535, 1351.9803, 1352.6508, 1353.7488, 1356.4877, 1357.2635, 1358.1831, 1359.0709, 1361.5647, 1362.3122, 1363.438, 1364.3822, 1366.3126, 1367.6659, 1369.8089, 1370.9103, 1371.2776, 1372.7602, 1374.208, 1374.1796, 1377.1501, 1379.8152, 1380.5175, 1381.1065, 1383.4064, 1384.4988, 1385.0947, 1385.9575, 1387.0769, 1387.0617, 1387.5918, 1388.4041, 1390.9296, 1391.7467, 1391.8863, 1393.25, 1393.9063, 1395.5123, 1396.9728, 1398.9746, 1400.7198, 1402.0762, 1403.4838, 1404.3743, 1405.1712, 1405.5055, 1406.2758, 1406.8865, 1407.6954, 1408.6258, 1411.2035, 1414.7023, 1416.1301, 1417.7083, 1418.3404, 1421.9581, 1424.5896, 1427.1706, 1427.4237, 1427.3998, 1427.9304, 1429.8014, 1431.3668, 1432.097, 1433.0982, 1434.9007, 1435.9711, 1439.5313, 1442.0673, 1442.8926, 1443.2089, 1443.44, 1443.7327, 1444.0632, 1445.7667, 1446.64, 1447.3063, 1448.6789, 1449.3284, 1450.0087, 1450.641, 1451.3937, 1451.8083, 1452.932, 1454.5364, 1456.0122, 1460.113, 1461.5611, 1462.4945, 1463.804, 1465.7314, 1466.4813, 1467.4827, 1469.5765, 1472.2398, 1473.5273, 1474.0077, 1477.7592, 1479.0917, 1481.0197, 1482.0521, 1482.9903, 1484.8006, 1485.9185, 1487.6322, 1488.4101, 1489.2324, 1489.9191, 1492.8133, 1493.8081, 1495.0118, 1495.7755, 1496.2697, 1497.0792, 1504.0252, 1506.7157, 1512.7947, 1513.4418, 1516.3638, 1517.2762, 1519.0662, 1520.0016, 1521.9442, 1522.6771, 1524.1103, 1525.2478, 1526.5294, 1527.1407, 1529.5648, 1530.6992, 1530.6596, 1534.6911, 1534.9954, 1536.8135, 1537.3969, 1539.0031, 1540.7582, 1541.649, 1542.8096, 1543.5419, 1544.0991, 1545.6117, 1548.6489, 1548.9082, 1549.4616, 1550.0558, 1551.5369, 1551.6762, 1552.1622, 1554.5061, 1558.3244, 1558.8478, 1559.7738, 1560.1323, 1560.6365, 1562.0147, 1562.8935, 1563.693, 1564.2476, 1566.7812, 1568.8106, 1570.296, 1572.0047, 1572.7826, 1573.6266, 1574.8298, 1576.0744, 1579.0948, 1579.6846, 1580.4281, 1581.0944, 1583.7359, 1586.8313, 1587.8477, 1588.2616, 1590.9995, 1593.1704, 1594.2572, 1595.1657, 1597.8343, 1598.7827, 1600.6154, 1606.6704, 1608.4906, 1610.3569, 1610.9956, 1611.6229, 1615.6353, 1616.0575, 1617.0755, 1617.6532, 1621.3769, 1622.0562, 1623.4648, 1623.8738, 1624.9647, 1625.8396, 1626.4038, 1627.4518, 1627.4294, 1628.6629, 1629.5064, 1632.1647, 1634.1227, 1636.2571, 1638.3639, 1639.4587, 1640.4931, 1640.9777, 1642.5548, 1643.9612, 1645.1755, 1648.4798, 1649.9012, 1649.6857, 1650.7965, 1652.3511, 1653.702, 1654.3635, 1655.6609, 1656.3347, 1657.8762, 1658.5684, 1660.8781, 1663.102, 1664.636, 1666.705, 1669.7196, 1671.3288, 1672.924, 1672.7151, 1673.0562, 1674.5307, 1675.4108, 1678.328, 1679.1223, 1679.9957, 1680.6232, 1681.6596, 1682.0853, 1684.6513, 1685.7317, 1686.8914, 1688.1558, 1691.0592, 1694.8827, 1698.1432, 1699.653, 1700.6454, 1702.4976, 1702.8575, 1705.3477, 1706.8183, 1708.2764, 1709.647, 1710.6473, 1714.3532, 1715.7034, 1715.6945, 1716.4218, 1716.6971, 1718.0168, 1719.8161, 1721.0766, 1721.6788, 1722.264, 1723.7374, 1725.9555, 1725.7784, 1727.5903, 1729.7952, 1730.2588, 1731.0148, 1731.479, 1732.7011, 1736.024, 1736.4612, 1743.0464, 1744.0828, 1744.7727, 1748.3133, 1749.2887, 1749.8289, 1752.1466, 1752.7111, 1753.6113, 1755.3115, 1755.5228, 1756.4566, 1756.4166, 1760.0965, 1760.6938, 1761.5396, 1762.2016, 1764.0784, 1767.4247, 1768.3407, 1769.4043, 1771.4709, 1772.1727, 1772.9762, 1772.9067, 1772.8735, 1774.4506, 1776.0688, 1776.4702, 1777.6199, 1778.6193, 1779.3546, 1779.812, 1780.6131, 1781.7446, 1782.8331, 1784.7491, 1786.8406, 1787.1347, 1787.5874, 1788.8199, 1789.0825, 1790.0873, 1790.7617, 1792.3899, 1793.7148, 1795.6099, 1797.2119, 1800.018, 1801.1703, 1802.3525, 1802.7503, 1804.6831, 1805.9808, 1808.1356, 1810.68, 1811.0253, 1811.9137, 1813.5384, 1814.0251, 1817.0692, 1818.5366, 1819.3109, 1820.7063, 1821.6715, 1821.6453, 1822.9415, 1830.6588, 1831.1852, 1836.4345, 1838.1522, 1838.807, 1842.4563, 1848.5649, 1848.5022, 1849.5043, 1850.9349, 1851.6984, 1854.6021, 1855.2909, 1856.3413, 1858.0948, 1858.7761, 1859.3093, 1860.0383, 1861.1312, 1862.9052, 1864.5647, 1865.8306, 1867.0519, 1867.9861, 1868.6476, 1869.0654, 1869.8525, 1870.3133, 1870.9868, 1872.2953, 1872.7784, 1874.6773, 1876.4528, 1877.852, 1880.5165, 1881.7196, 1884.0305, 1885.2358, 1885.9481, 1886.079, 1887.1657, 1889.2434, 1889.6461, 1890.2282, 1894.6253, 1896.2832, 1897.7928, 1901.0351, 1904.4643, 1904.8909, 1906.862, 1907.9388, 1908.4102, 1909.8548, 1910.3545, 1911.1248, 1912.1401, 1913.3346, 1913.7752, 1917.3581, 1920.0892, 1920.3455, 1920.8796, 1922.4573, 1923.0191, 1924.6598, 1925.3608, 1927.1066, 1928.601, 1929.2775, 1934.7067, 1935.8183, 1937.6261, 1938.3216, 1938.6721, 1939.8381, 1942.5854, 1943.3405, 1944.1523, 1944.8036, 1945.875, 1946.2421, 1947.3084, 1948.1297, 1949.9119, 1951.0086, 1953.289, 1954.259, 1955.4103, 1955.9792, 1956.8756, 1957.6287, 1958.6323, 1959.1733, 1960.6443, 1962.1915, 1963.2489, 1965.6018, 1966.059, 1966.7653, 1969.1855, 1971.5805, 1972.9671, 1973.082, 1974.2265, 1974.7347, 1975.6555, 1977.0252, 1981.3269, 1981.6298, 1985.814, 1989.4863, 1991.155, 1991.9693, 1992.894, 1995.2432, 1995.221, 1996.4863, 1997.5259, 1998.0068, 1999.7031, 2000.2169, 2002.4321, 2002.8533, 2003.9535, 2006.1306, 2006.5394, 2008.364, 2009.9354, 2011.4384, 2012.1087, 2012.6146, 2015.4833, 2017.0759, 2017.5976, 2018.674, 2019.6301, 2019.891, 2022.8438, 2027.4841, 2029.1174, 2032.5178, 2033.7327, 2034.1369, 2034.4961, 2035.7174, 2036.8685, 2039.0894, 2040.0432, 2041.3187, 2041.9255, 2043.2585, 2045.3163, 2046.215, 2047.965, 2049.3919, 2053.3535, 2054.1714, 2054.983, 2056.9593, 2059.3984, 2062.9683, 2065.6397, 2067.2948, 2069.1928, 2069.5666, 2070.0375, 2071.8623, 2073.3686, 2073.8458, 2077.621, 2077.5562, 2077.9195, 2081.2578, 2081.678, 2083.8713, 2085.4223, 2086.5745, 2092.38, 2095.2486, 2095.8765, 2096.7264, 2097.8942, 2098.2499, 2099.5912, 2099.8593, 2101.2374, 2102.4739, 2103.9831, 2107.4477, 2108.7898, 2108.7186, 2109.9743, 2111.5899, 2113.2175, 2116.0545, 2116.7204, 2118.0313, 2120.3162, 2121.7088, 2123.126, 2123.9509, 2124.4092, 2126.314, 2128.5729, 2128.9066, 2133.1723, 2133.6405, 2137.2209, 2138.2743, 2139.6501, 2140.7065, 2141.523, 2143.323, 2144.2177, 2145.1155, 2146.5111, 2148.064, 2150.1673, 2150.6184, 2152.9473, 2153.5651, 2154.5269, 2155.2776, 2157.3596, 2158.9947, 2160.7135, 2162.1361, 2163.1185, 2164.753, 2165.4853, 2168.3546, 2168.8956, 2172.1449, 2172.951, 2174.3145, 2175.4279, 2176.4531, 2177.1794, 2178.9333, 2179.5636, 2180.8817, 2185.5105, 2185.8995, 2187.1631, 2189.4046, 2192.1201, 2193.2125, 2194.6711, 2195.2357, 2195.5223, 2196.212, 2197.7246, 2202.4494, 2203.0226, 2204.2593, 2206.023, 2206.9804, 2207.1629, 2207.7956, 2208.7185, 2209.1387, 2209.6226, 2210.5564, 2212.0238, 2213.3235, 2214.7346, 2218.18, 2221.4496, 2222.8323, 2222.7713, 2223.8021, 2224.6364, 2225.5728, 2229.3543, 2230.6652, 2231.8115, 2232.5463, 2235.3335, 2235.9668, 2236.357, 2238.457, 2239.5819, 2240.7056, 2241.0569, 2244.2679, 2245.3989, 2246.3643, 2247.0222, 2247.6594, 2252.9331, 2253.5237, 2254.9227, 2255.4157, 2257.1416, 2261.8229, 2262.3121, 2263.1204, 2263.4805, 2264.1396, 2265.5234, 2266.6489, 2267.7879, 2269.9055, 2270.745, 2272.2891, 2272.7911, 2273.8675, 2276.4335, 2277.5449, 2278.6987, 2280.1033, 2280.8836, 2281.3227, 2283.1264, 2284.2446, 2285.2614, 2287.1822, 2290.9501, 2291.462, 2292.1073, 2293.0898, 2293.575, 2296.104, 2297.0009, 2298.1523, 2299.4771, 2300.2749, 2300.9319, 2301.9273, 2302.3825, 2304.3342, 2304.7544, 2306.2051, 2306.9718, 2309.8025, 2310.8999, 2311.5467, 2311.8628, 2313.1778, 2314.5644, 2316.9125, 2317.6436, 2319.482, 2320.0326, 2320.496, 2321.9974, 2323.9328, 2324.9882, 2325.7904, 2328.0523, 2330.1565, 2331.0825, 2333.8006, 2338.5193, 2339.0865, 2341.8716, 2343.2657, 2343.8587, 2344.2979, 2344.7463, 2345.5194, 2346.9871, 2347.3337, 2349.5654, 2349.8855, 2351.6032, 2352.3029, 2353.471, 2354.4442, 2354.3833, 2357.3605, 2358.1258, 2358.663, 2360.8207, 2361.3937, 2363.2292, 2364.0548, 2364.8851, 2365.4898, 2367.0456, 2369.2866, 2372.1461, 2374.1293, 2375.3023, 2376.3796, 2377.0981, 2378.4533, 2380.3495, 2381.2193, 2382.3574, 2382.6335, 2385.1488, 2385.4294, 2386.0398, 2387.538, 2388.1791, 2388.5197, 2390.3114, 2390.5749, 2392.7988, 2395.1147, 2397.5592, 2398.1666, 2399.8945, 2400.1691, 2401.2643, 2402.4723, 2403.9117, 2404.7216, 2404.6325, 2405.891, 2406.596, 2406.8136, 2408.9697, 2409.618, 2411.0172, 2414.226, 2414.6492, 2415.7056, 2416.3141, 2416.8834, 2417.8198, 2418.2704, 2420.5969, 2421.8322, 2424.9676, 2427.7767, 2430.6435, 2433.5213, 2435.0759, 2436.1814, 2437.4575, 2437.9095, 2439.0704, 2439.8197, 2440.3575, 2441.5196, 2443.848, 2445.4802, 2447.6588, 2448.5923, 2448.9068, 2450.2065, 2451.03, 2452.5034, 2453.9952, 2456.9834, 2457.7065, 2459.2815, 2460.2257, 2462.2815, 2464.0992, 2468.1536, 2468.4337, 2470.1406, 2471.2135, 2471.8233, 2472.634, 2473.6694, 2477.0994, 2479.1002, 2481.2643, 2482.4217, 2482.7046, 2484.7054, 2485.3032, 2485.2797, 2488.3511, 2488.8455, 2489.561, 2490.1594, 2491.9041, 2492.3698, 2492.974, 2494.0094, 2499.5844, 2500.8389, 2502.157, 2503.3767, 2508.4775, 2509.4294, 2509.5846, 2511.4737, 2513.0616, 2514.6354, 2515.9229, 2518.7188, 2519.2814, 2519.804, 2524.7902, 2526.4676, 2527.549, 2528.7115, 2529.0561, 2529.874, 2530.9544, 2531.6749, 2532.8514, 2532.7873, 2533.971, 2535.2511, 2537.0624, 2538.078, 2539.4766, 2540.0939, 2541.8806, 2542.891, 2545.6697, 2551.7457, 2552.5652, 2553.604, 2554.7143, 2555.6423, 2556.5531, 2559.0501, 2559.5433, 2564.4453, 2564.9031, 2565.8035, 2568.935, 2569.3272, 2571.0859, 2572.937, 2573.1849, 2573.753, 2574.337, 2576.0002, 2576.6178, 2578.5536, 2579.5913, 2580.1781, 2580.5207, 2581.864, 2582.5531, 2584.4403, 2586.141, 2587.5666, 2589.9679, 2593.0033, 2594.4625, 2595.6972, 2598.2506, 2599.4051, 2599.8885, 2600.5047, 2604.6959, 2606.0514, 2606.6284, 2607.2671, 2609.3253, 2613.0988, 2614.5844, 2615.1665, 2615.8763, 2617.7964, 2618.7948, 2620.1734, 2620.9481, 2621.774, 2622.8106, 2623.4909, 2626.0835, 2627.9701, 2628.4848, 2629.9344, 2630.5154, 2631.5399, 2632.0531, 2632.5489, 2633.7299, 2635.2606, 2636.0705, 2636.7228, 2637.4991, 2638.0003, 2639.4313, 2640.8368, 2641.2492, 2642.6107, 2643.2806, 2644.9397, 2645.5328, 2647.0118, 2647.9208, 2648.5538, 2648.8965, 2650.1345, 2651.1345, 2651.5791, 2653.6246, 2654.2008, 2655.3853, 2656.6778, 2658.9007, 2659.6892, 2660.5575, 2660.4865, 2662.2552, 2668.0147, 2670.0155, 2670.3817, 2670.8559, 2671.2411, 2671.8804, 2673.401, 2675.2134, 2677.836, 2679.5656, 2680.1234, 2682.8101, 2683.1752, 2687.4462, 2687.8251, 2688.7342, 2690.3368, 2690.6384, 2691.2378, 2692.6086, 2693.6746, 2694.1356, 2694.8543, 2696.4569, 2697.3363, 2700.5952, 2702.4445, 2703.1108, 2704.3185, 2706.239, 2708.54, 2709.9782, 2710.8341, 2712.4608, 2714.8927, 2715.7235, 2717.2439, 2719.033, 2719.5316, 2720.3698, 2721.1928, 2722.3357, 2724.0824, 2725.7169, 2726.0392, 2726.5554, 2730.6084, 2731.2619, 2733.5782, 2734.5726, 2740.2421, 2742.0503, 2743.2658, 2744.8955, 2745.7292, 2746.0293, 2746.6392, 2748.9986, 2749.3611, 2749.606, 2749.6014, 2750.5318, 2750.7832, 2751.8847, 2753.7968, 2757.0871, 2757.419, 2757.4144, 2758.949, 2760.2352, 2761.7334, 2765.689, 2766.478, 2767.5652, 2768.0846, 2770.427, 2771.0561, 2771.7207, 2774.7327, 2776.0274, 2780.0418, 2780.4132, 2783.0495, 2783.7218, 2785.9395, 2786.6368, 2787.8495, 2789.4083, 2790.1422, 2791.1566, 2791.1384, 2792.8451, 2800.8511, 2802.5124, 2803.3709, 2804.4288, 2805.1277, 2806.2038, 2806.2012, 2806.1953, 2807.9272, 2809.3264, 2810.5883, 2811.0934, 2811.9388, 2812.6931, 2813.9032, 2817.9503, 2820.077, 2820.7409, 2822.7253, 2823.3015, 2824.4716, 2825.3357, 2829.6032, 2831.1163, 2834.7524, 2837.3605, 2838.2092, 2839.232, 2839.6062, 2840.2082, 2841.0005, 2841.6378, 2843.4497, 2845.0543, 2846.0323, 2847.0503, 2849.0528, 2849.8242, 2851.4104, 2853.1295, 2852.9775, 2853.7345, 2856.5496, 2857.0158, 2859.7217, 2860.3128, 2862.2441, 2863.9894, 2864.2979, 2864.9219, 2865.7832, 2868.4743, 2869.8785, 2871.4807, 2872.9558, 2875.5702, 2876.8148, 2877.3796, 2879.6821, 2880.3124, 2880.7, 2881.7287, 2884.5918, 2886.5095, 2887.7301, 2888.7357, 2890.4303, 2890.9915, 2891.6486, 2892.7927, 2893.7967, 2894.528, 2895.1429, 2896.9452, 2898.2782, 2899.2671, 2900.8518, 2901.8172, 2903.1939, 2903.6405, 2903.6222, 2907.4693, 2910.8194, 2910.7688, 2915.161, 2916.2387, 2919.0898, 2921.6714, 2923.2734, 2925.9705, 2928.5662, 2928.9543, 2930.3829, 2930.8061, 2932.3792, 2932.6788, 2934.9417, 2935.7907, 2937.3167, 2938.6812, 2941.4683, 2942.406, 2943.3388, 2943.7559, 2947.3841, 2948.3547, 2949.9041, 2951.3837, 2952.075, 2953.3625, 2954.3709, 2956.0228, 2957.1672, 2958.9501, 2959.4799, 2960.0045, 2961.1101, 2962.3378, 2962.8424, 2964.0477, 2965.4301, 2966.2096, 2966.6974, 2967.9989, 2968.8795, 2969.2597, 2969.4883, 2970.4487, 2971.315, 2972.1616, 2973.9844, 2976.8415, 2979.4102, 2980.0649, 2980.5731, 2982.9116, 2983.4662, 2984.6507, 2987.1207, 2986.8807, 2987.9151, 2989.3575, 2989.7807, 2990.2714, 2990.4842, 2991.0132, 2991.8167, 2996.4584, 2997.2144, 2998.3391, 3001.3323, 3005.9101, 3006.3943, 3006.9945, 3008.0959, 3008.8981, 3010.3028, 3011.2688, 3012.4683, 3012.6992, 3013.2734, 3014.1824, 3014.6646, 3015.5785, 3016.888, 3017.5433, 3018.3636, 3018.951, 3019.1954, 3020.6264, 3020.5912, 3023.2181, 3024.0766, 3024.3807, 3025.544, 3026.7237, 3027.2447, 3028.4322, 3030.1489, 3030.7555, 3033.8201, 3035.0053, 3037.1286, 3038.4479, 3040.9857, 3041.7756, 3043.3422, 3045.8107, 3046.0367, 3047.4653, 3048.4881, 3049.0723, 3050.0891, 3050.7023, 3050.925, 3052.9998, 3053.7889, 3054.4894, 3056.1673, 3056.6519, 3059.0368, 3059.3529, 3060.5858, 3061.1685, 3064.3369, 3064.7601, 3065.6328, 3066.1629, 3068.2838, 3068.6487, 3071.996, 3072.629, 3073.3361, 3075.1827, 3076.1281, 3078.0243, 3078.2953, 3078.9177, 3080.6482, 3082.755, 3084.3428, 3085.1929, 3085.996, 3087.0071, 3087.9441, 3088.5134, 3090.016, 3092.3521, 3096.6511, 3097.4678, 3097.4416, 3098.5068, 3098.8818, 3099.8646, 3100.247, 3101.2657, 3102.1046, 3103.7563, 3104.8978, 3105.3726, 3107.2494, 3107.8306, 3110.5253, 3112.334, 3113.494, 3115.5377, 3116.7682, 3116.721, 3117.9887, 3118.5065, 3118.829, 3119.9382, 3121.3292, 3121.8163, 3122.051, 3122.7641, 3124.0222, 3123.9321, 3125.8777, 3127.147, 3128.4831, 3129.3871, 3129.2385, 3132.2097, 3132.0871, 3132.6113, 3133.771, 3137.3653, 3138.8527, 3139.4361, 3140.1189, 3142.9536, 3144.1713, 3144.9157, 3148.0922, 3149.3707, 3152.4294, 3154.1458, 3155.726, 3156.3081, 3157.4714, 3160.5103, 3162.7498, 3163.6907, 3166.0661, 3166.6823, 3168.438, 3171.8848, 3172.4142, 3173.3066, 3174.9915, 3175.3052, 3175.8062, 3177.742, 3180.4691, 3180.9153, 3185.1155, 3185.65, 3186.0398, 3186.468, 3187.3972, 3188.781, 3189.4824, 3191.2098, 3192.3803, 3192.3523, 3193.7206, 3193.7085, 3194.6539, 3196.2287, 3197.6288, 3197.9579, 3200.9351, 3201.6254, 3201.984, 3202.4347, 3203.3375, 3203.6553, 3205.6009, 3206.2858, 3206.9945, 3207.5847, 3207.9438, 3208.404, 3209.2483, 3209.6925, 3210.8916, 3211.861, 3215.1341, 3215.7128, 3216.334, 3218.1887, 3219.9878, 3224.104, 3226.9513, 3227.9017, 3228.667, 3230.3107, 3230.9572, 3231.2243, 3232.0456, 3232.4511, 3237.1156, 3237.5406, 3238.1596, 3239.7969, 3240.3587, 3242.1946, 3242.73, 3244.1439, 3245.368, 3247.2945, 3248.2789, 3248.3879, 3249.1826, 3250.3633, 3250.9641, 3251.8537, 3252.5833, 3252.5778, 3254.0127, 3254.8292, 3255.1758, 3255.6248, 3256.041, 3256.5466, 3257.3885, 3257.7337, 3258.9497, 3258.9048, 3259.4186, 3260.1549, 3260.495, 3261.5502, 3261.9548, 3264.2027, 3266.6091, 3267.0913, 3269.4154, 3271.6145, 3272.1267, 3274.0028, 3274.405, 3276.0665, 3276.4479, 3278.0264, 3279.8127, 3286.108, 3288.6365, 3290.6133, 3293.0764, 3294.1352, 3295.2094, 3297.7153, 3300.3351, 3300.5935, 3304.8504, 3305.9278, 3307.3629, 3308.0205, 3309.7046, 3310.2558, 3312.3004, 3312.8564, 3313.369, 3314.9248, 3316.0142, 3316.5016, 3317.3632, 3320.7294, 3322.1097, 3322.2204, 3322.8867, 3324.101, 3324.6742, 3329.3914, 3331.1437, 3332.5471, 3332.9008, 3333.9636, 3336.5777, 3338.7546, 3340.0079, 3340.4752, 3340.4624, 3340.3913, 3341.4907, 3344.4559, 3346.6534, 3348.2044, 3349.1438, 3350.877, 3352.2308, 3352.764, 3353.1971, 3355.8093, 3356.6599, 3358.6507, 3360.2533, 3360.691, 3361.23, 3361.9103, 3363.7656, 3365.0544, 3365.7463, 3367.3079, 3369.6382, 3370.4981, 3371.9726, 3373.8893, 3374.3185, 3375.5538, 3375.6702, 3376.6696, 3376.5042, 3376.4356, 3376.7647, 3376.9912, 3378.2523, 3379.3255, 3380.2961, 3380.2609, 3381.2183, 3384.1928, 3385.1844, 3387.3264, 3390.9206, 3392.9971, 3394.0663, 3397.0441, 3398.3043, 3398.8624, 3399.309, 3402.1689, 3403.5896, 3404.2759, 3405.397, 3409.2353, 3411.4982, 3411.7599, 3412.4371, 3413.2114, 3414.684, 3415.2692, 3416.8772, 3421.012, 3420.9739, 3421.3148, 3422.0732, 3426.443, 3426.9396, 3427.8149, 3429.1042, 3431.518, 3432.745, 3433.3468, 3437.6771, 3438.1465, 3440.2197, 3440.1822, 3442.756, 3443.2998, 3444.5327, 3445.7464, 3446.4382, 3450.2677, 3451.5486, 3454.7278, 3456.356, 3456.7468, 3457.7984, 3459.6828, 3460.7578, 3463.2022, 3463.7128, 3465.3871, 3466.1476, 3466.6206, 3468.5414, 3469.4298, 3470.2813, 3472.5228, 3474.0424, 3474.6474, 3475.2306, 3475.8083, 3476.9049, 3477.9418, 3479.1701, 3480.6995, 3482.9329, 3483.3891, 3484.6112, 3485.5226, 3486.7537, 3487.0463, 3487.2282, 3489.7489, 3490.3658, 3492.8528, 3493.2602, 3494.7058, 3496.204, 3498.0407, 3499.6848, 3500.0835, 3501.4064, 3502.6333, 3503.2816, 3503.9001, 3507.196, 3509.1378, 3509.582, 3510.5559, 3512.2441, 3513.2154, 3514.7851, 3515.5995, 3516.4664, 3516.7233, 3518.8782, 3521.2582, 3522.2102, 3523.1176, 3526.7092, 3530.9445, 3531.691, 3532.1553, 3532.8728, 3533.9061, 3533.8819, 3536.4204, 3537.997, 3538.8801, 3540.6514, 3541.2709, 3544.1286, 3545.1944, 3548.4469, 3549.0098, 3550.0318, 3549.9553, 3552.0021, 3553.2626, 3554.2874, 3557.1824, 3560.3587, 3561.0844, 3561.9271, 3565.0564, 3566.038, 3567.2925, 3567.6442, 3568.7872, 3573.2993, 3573.9584, 3575.0817, 3577.5747, 3578.7621, 3579.5398, 3583.1657, 3584.5875, 3585.2368, 3588.4565, 3591.7358, 3592.0427, 3592.4233, 3593.2961, 3593.4738, 3594.6527, 3596.9316, 3598.4129, 3603.4105, 3604.4079, 3605.6198, 3606.4409, 3607.4529, 3607.6626, 3608.8775, 3610.2004, 3610.9861, 3615.7544, 3616.8859, 3618.246, 3619.0861, 3626.2639, 3627.4733, 3628.3344, 3630.5991, 3631.1489, 3632.9856, 3634.7663, 3636.8857, 3640.7104, 3643.4289, 3644.3497, 3644.3471, 3648.1742, 3648.8549, 3648.6807, 3649.0769, 3649.7968, 3652.9957, 3654.1887, 3654.5934, 3656.6895, 3658.1149, 3659.4679, 3660.3232, 3661.6206, 3662.0908, 3665.199, 3665.5872, 3666.0816, 3667.6088, 3670.6745, 3672.8604, 3674.9132, 3675.8156, 3677.0568, 3679.1036, 3679.6126, 3680.6979, 3681.9269, 3683.1154, 3684.5356, 3687.0102, 3689.2511, 3691.7756, 3693.0631, 3696.2948, 3699.5238, 3700.7745, 3703.3643, 3704.3072, 3706.2952, 3707.1223, 3707.9776, 3709.2645, 3709.8247, 3712.6987, 3713.5937, 3715.2311, 3717.5252, 3720.3262, 3720.3001, 3721.2287, 3721.6124, 3722.8724, 3723.6085, 3725.3732, 3726.4806, 3727.0667, 3727.763, 3730.0123, 3729.9713, 3731.0322, 3732.0392, 3733.4423, 3735.7224, 3737.109, 3738.5517, 3741.2783, 3742.2039, 3744.7204, 3744.5811, 3747.0445, 3749.1128, 3749.9659, 3751.4705, 3752.3134, 3754.4857, 3757.295, 3757.904, 3758.3214, 3759.0297, 3762.6504, 3764.6384, 3765.0362, 3764.8901, 3768.7915, 3770.6691, 3772.5904, 3773.075, 3773.2899, 3773.7976, 3775.8569, 3777.8401, 3780.1578, 3780.0235, 3781.5893, 3784.6949, 3785.802, 3789.0557, 3790.2042, 3791.8241, 3792.6296, 3793.0038, 3794.9607, 3795.2144, 3795.9896, 3797.8111, 3798.893, 3799.7583, 3802.3353, 3804.1227, 3804.313, 3805.5465, 3806.4689, 3807.6174, 3807.8135, 3808.2617, 3810.0747, 3811.3856, 3815.5749, 3817.2628, 3818.6572, 3821.4679, 3823.4539, 3823.8524, 3829.3286, 3831.6269, 3832.729, 3833.9155, 3834.7804, 3839.6529, 3843.4506, 3844.3708, 3844.9955, 3847.2497, 3848.1917, 3848.0924, 3849.6974, 3850.1346, 3851.8153, 3852.3879, 3853.5404, 3854.9606, 3855.6039, 3857.4382, 3858.3326, 3860.2122, 3861.4792, 3861.4334, 3863.8788, 3865.7257, 3867.0057, 3867.4675, 3868.3655, 3868.8202, 3870.6009, 3871.6397, 3871.9458, 3872.6226, 3873.5478, 3874.8193, 3876.1238, 3879.4467, 3880.1049, 3881.0041, 3881.5496, 3885.6985, 3888.4028, 3888.8203, 3890.8596, 3893.0403, 3894.2784, 3896.0935, 3896.4365, 3898.9272, 3900.1289, 3901.8638, 3902.2544, 3902.864, 3903.9252, 3904.9204, 3905.6294, 3906.0916, 3909.3869, 3911.2977, 3913.1614, 3917.3134, 3918.4262, 3919.9388, 3920.6992, 3921.8305, 3922.7047, 3922.9464, 3923.6552, 3924.9797, 3925.5581, 3927.2808, 3928.4333, 3930.234, 3931.1456, 3933.5442, 3933.9734, 3935.378, 3936.3508, 3938.9791, 3941.6796, 3942.1254, 3943.9015, 3945.9603, 3948.4545, 3951.3911, 3952.4256, 3953.6293, 3953.8712, 3955.0987, 3956.7868, 3958.1766, 3959.6332, 3960.3385, 3962.4662, 3962.8143, 3963.1231, 3964.9718, 3967.3095, 3967.5848, 3968.3027, 3969.0422, 3969.5792, 3970.2115, 3971.7245, 3974.8137, 3976.3565, 3977.2877, 3977.6596, 3978.2772, 3979.5901, 3982.0523, 3981.9583, 3982.1114, 3984.7861, 3987.7253, 3996.1662, 3998.2314, 3999.0061, 3999.8933, 4000.4943, 4004.5699, 4007.1488, 4009.931, 4010.6837, 4012.3007, 4013.3777, 4016.9355, 4017.2764, 4018.74, 4018.9881, 4019.7516, 4021.299, 4021.6856, 4021.9377, 4022.6868, 4023.7432, 4025.7642, 4026.5666, 4029.4725, 4030.5259, 4032.4275, 4033.2621, 4035.9896, 4035.9806, 4036.7915, 4037.3637, 4039.2191, 4039.479, 4040.2569, 4040.5195, 4041.7, 4044.2281, 4044.8814, 4045.8638, 4046.3722, 4047.7821, 4049.4052, 4051.2701, 4052.861, 4055.5272, 4057.3311, 4058.0274, 4058.6597, 4059.4504, 4065.4147, 4065.7244, 4067.2085, 4068.4564, 4068.4354, 4069.7169, 4070.6373, 4071.1615, 4072.1043, 4074.5981, 4075.4377, 4076.5375, 4078.0945, 4079.8064, 4081.3023, 4082.1314, 4083.5312, 4084.7305, 4085.3383, 4087.2774, 4089.197, 4089.7417, 4089.5885, 4090.7815, 4091.1921, 4092.1957, 4094.0636, 4099.0088, 4100.7555, 4102.7779, 4103.4046, 4104.4641, 4105.1424, 4106.2201, 4106.7279, 4110.2503, 4110.889, 4111.769, 4112.8796, 4113.5579, 4115.1525, 4115.6028, 4116.4039, 4117.4512, 4120.992, 4121.931, 4124.5739, 4124.9219, 4125.4729, 4128.1866, 4129.9733, 4131.6764, 4132.5926, 4134.4774];
+const ddValues = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0571, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.065, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1879, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1112, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0361, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0401, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0422, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1356, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0706, 0.0, 0.0, 0.0, 0.0244, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0851, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0771, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0824, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.134, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1242, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3164, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0505, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0523, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4613, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0345, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0893, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2443, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0067, 0.1868, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1259, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0284, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0152, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0239, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0396, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0224, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2155, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2089, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0089, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1771, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0695, 0.1027, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0262, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0627, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0222, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0648, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0712, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.061, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0609, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0891, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0235, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0641, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.071, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0046, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0046, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0182, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0026, 0.0085, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.152, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0183, 0.0, 0.0, 0.0506, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.24, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0352, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0262, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0472, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0901, 0.0, 0.0, 0.0, 0.0, 0.1486, 0.0, 0.1226, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.028, 0.0, 0.0121, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0055, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0449, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0128, 0.0839, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1654, 0.234, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0352, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0381, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0375, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0242, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0765, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0026, 0.0, 0.0, 0.1742, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0261, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.041, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1393, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1461, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1343, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0458, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.094, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.009, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.021, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1532, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
+// ── Equity Curve ──
+new Chart(document.getElementById('equityChart'), {
+  type: 'line',
+  data: {
+    labels: eqDates,
+    datasets: [{
+      label: 'P&L cumulatif ($)',
+      data: eqValues,
+      borderColor: '#34d399',
+      backgroundColor: (ctx) => {
+        const g = ctx.chart.ctx.createLinearGradient(0,0,0,300);
+        g.addColorStop(0, 'rgba(52,211,153,0.18)');
+        g.addColorStop(1, 'rgba(52,211,153,0.01)');
+        return g;
+      },
+      fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' $' + ctx.parsed.y.toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxTicksLimit: 12, maxRotation: 0}},
+      y: {
+        ticks: {callback: v => '$' + v.toLocaleString('fr-FR', {minimumFractionDigits:0})},
+        grid: {color: '#1e2130'}
+      }
+    }
+  }
+});
+
+// ── Drawdown ──
+new Chart(document.getElementById('drawdownChart'), {
+  type: 'line',
+  data: {
+    labels: eqDates,
+    datasets: [{
+      label: 'Drawdown ($)',
+      data: ddValues.map(v => -v),
+      borderColor: '#f87171',
+      backgroundColor: 'rgba(248,113,113,0.12)',
+      fill: true, tension: 0.3, pointRadius: 0, borderWidth: 1.5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' -$' + Math.abs(ctx.parsed.y).toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxTicksLimit: 12, maxRotation: 0}},
+      y: {ticks: {callback: v => '-$' + Math.abs(v).toFixed(0)}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Monthly P&L ──
+new Chart(document.getElementById('monthlyPnlChart'), {
+  type: 'bar',
+  data: {
+    labels: ["2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02"],
+    datasets: [{
+      label: 'P&L ($)',
+      data: [153.96, 338.09, 374.07, 368.2, 381.73, 379.19, 349.5, 361.49, 346.76, 328.22, 396.62, 356.64],
+      backgroundColor: ["rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)"],
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' $' + ctx.parsed.y.toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 45}},
+      y: {ticks: {callback: v => '$' + v}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Monthly Trades ──
+new Chart(document.getElementById('monthlyTradesChart'), {
+  type: 'bar',
+  data: {
+    labels: ["2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02"],
+    datasets: [{
+      label: 'Trades',
+      data: [115, 249, 258, 262, 276, 271, 245, 268, 258, 267, 265, 251],
+      backgroundColor: 'rgba(96,165,250,0.7)',
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false}},
+    scales: {
+      x: {ticks: {maxRotation: 45}},
+      y: {ticks: {stepSize: 1}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Spread distribution ──
+new Chart(document.getElementById('spreadChart'), {
+  type: 'bar',
+  data: {
+    labels: ["0.85\u20130.86", "0.86\u20130.87", "0.87\u20130.88", "0.88\u20130.89", "0.89\u20130.90", "0.90\u20130.91", "0.91\u20130.92", "0.92\u20130.93", "0.93\u20130.94", "0.94\u20130.95", "0.95\u20130.96", "0.96\u20130.97", "0.97\u20130.98", "0.98\u20130.99", "0.99\u20131.00"],
+    datasets: [{
+      label: 'Nombre de trades',
+      data: [0, 48, 106, 200, 268, 303, 349, 475, 444, 357, 240, 147, 48, 0, 0],
+      backgroundColor: 'rgba(167,139,250,0.75)',
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {title: ctx => 'Spread: ' + ctx[0].label}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 60, font: {size: 10}}},
+      y: {grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Profit distribution ──
+new Chart(document.getElementById('profitHistChart'), {
+  type: 'bar',
+  data: {
+    labels: ["-0.46", "0.40", "1.25", "2.11", "2.97", "3.83", "4.68", "5.54", "6.40", "7.25", "8.11", "8.97", "9.83", "10.68", "11.54"],
+    datasets: [{
+      label: 'Fréquence',
+      data: [312, 1384, 744, 309, 127, 63, 20, 17, 5, 2, 1, 0, 0, 0, 1],
+      backgroundColor: (ctx) => {
+        const v = parseFloat(["-0.46", "0.40", "1.25", "2.11", "2.97", "3.83", "4.68", "5.54", "6.40", "7.25", "8.11", "8.97", "9.83", "10.68", "11.54"][ctx.dataIndex] || 0);
+        return v >= 0 ? 'rgba(52,211,153,0.75)' : 'rgba(248,113,113,0.75)';
+      },
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {title: ctx => 'Profit: $' + ctx[0].label}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 60, font: {size: 10}}},
+      y: {grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Capital Scaling ──
+new Chart(document.getElementById('scalingChart'), {
+  type: 'bar',
+  data: {
+    labels: ["$100", "$500", "$1,000", "$5,000", "$10,000", "$25,000", "$50,000", "$100,000"],
+    datasets: [
+      {
+        label: 'Profit projeté ($)',
+        data: [41.34, 206.72, 413.45, 2067.24, 4134.48, 10336.2, 17735.21, 28810.93],
+        backgroundColor: 'rgba(52,211,153,0.75)',
+        borderRadius: 5, yAxisID: 'y'
+      },
+      {
+        label: 'ROI (%)',
+        data: [51.68, 51.68, 51.68, 51.68, 51.68, 51.68, 44.34, 36.01],
+        type: 'line',
+        borderColor: '#fbbf24',
+        backgroundColor: 'transparent',
+        pointBackgroundColor: '#fbbf24',
+        tension: 0.3, yAxisID: 'y2', borderWidth: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: {labels: {color: '#94a3b8', padding: 16}},
+      tooltip: {mode: 'index', intersect: false}
+    },
+    scales: {
+      x: {},
+      y: {
+        position: 'left',
+        ticks: {callback: v => '$' + v.toLocaleString('fr-FR', {maximumFractionDigits: 0})},
+        grid: {color: '#1e2130'}
+      },
+      y2: {
+        position: 'right',
+        ticks: {callback: v => v.toFixed(1) + '%'},
+        grid: {drawOnChartArea: false}
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
