@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backtest — BINARY_ARB (2025-02-28 → 2026-02-28)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh}
+  a{color:#60a5fa}
+  /* ── Header ── */
+  .header{background:linear-gradient(135deg,#1e2130 0%,#1a1d27 100%);
+           border-bottom:1px solid #2d3748;padding:28px 32px 20px}
+  .header-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .header h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+  .header h1 span{color:#60a5fa}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;
+          border-radius:20px;font-size:.8rem;font-weight:600;letter-spacing:.02em}
+  .badge-green{background:#064e3b;color:#34d399;border:1px solid #065f46}
+  .badge-red{background:#7f1d1d;color:#f87171;border:1px solid #991b1b}
+  .badge-blue{background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8}
+  .badge-yellow{background:#451a03;color:#fbbf24;border:1px solid #92400e}
+  .header-meta{font-size:.8rem;color:#64748b;margin-top:6px}
+  /* ── KPI grid ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+             gap:16px;padding:24px 32px}
+  .kpi{background:#1a1d27;border:1px solid #2d3748;border-radius:14px;
+        padding:20px 22px;position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+                background:var(--accent,#3b82f6)}
+  .kpi-label{font-size:.72rem;color:#94a3b8;text-transform:uppercase;
+              letter-spacing:.06em;margin-bottom:6px}
+  .kpi-value{font-size:2rem;font-weight:800;line-height:1}
+  .kpi-sub{font-size:.78rem;color:#64748b;margin-top:4px}
+  .c-green{color:#34d399;--accent:#34d399}
+  .c-red{color:#f87171;--accent:#f87171}
+  .c-blue{color:#60a5fa;--accent:#60a5fa}
+  .c-yellow{color:#fbbf24;--accent:#fbbf24}
+  .c-purple{color:#a78bfa;--accent:#a78bfa}
+  .c-cyan{color:#22d3ee;--accent:#22d3ee}
+  /* ── Section ── */
+  .section{margin:0 32px 32px}
+  .section-title{font-size:1.05rem;font-weight:600;color:#94a3b8;
+                  margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .section-title::after{content:'';flex:1;height:1px;background:#2d3748}
+  /* ── Chart card ── */
+  .chart-card{background:#1a1d27;border:1px solid #2d3748;border-radius:14px;padding:24px}
+  .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:900px){.chart-row{grid-template-columns:1fr}}
+  /* ── Table ── */
+  .table-wrap{overflow-x:auto;border-radius:14px;border:1px solid #2d3748}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  thead th{background:#1e2130;padding:12px 16px;text-align:left;
+            font-size:.72rem;text-transform:uppercase;color:#64748b;
+            letter-spacing:.06em;white-space:nowrap}
+  tbody td{padding:10px 16px;border-bottom:1px solid #1e2130;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:#1e2130}
+  .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600}
+  .tag-green{background:#064e3b;color:#34d399}
+  .tag-red{background:#7f1d1d;color:#f87171}
+  .tag-blue{background:#1e3a5f;color:#93c5fd}
+  /* ── Scaling table ── */
+  .scale-row-highlight{background:#1e2130 !important}
+  /* ── Footer ── */
+  footer{text-align:center;padding:24px;color:#334155;font-size:.78rem;border-top:1px solid #1e2130;margin-top:20px}
+  /* ── Warn box ── */
+  .warn{background:#1c1a0a;border:1px solid #713f12;border-radius:10px;
+         padding:14px 18px;font-size:.82rem;color:#fbbf24;margin-bottom:24px}
+  .warn strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>📊 Backtest — <span>BINARY_ARB</span></h1>
+      <div class="header-meta">
+        Période : <strong>2025-02-28</strong> → <strong>2026-02-28</strong> &nbsp;|&nbsp;
+        Preset risque : <strong>conservative_100</strong> &nbsp;|&nbsp;
+        Généré le 28/02/2026 à 22:31
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="badge badge-green">
+        +$64.17 P&L
+      </span>
+      <span class="badge badge-green">
+        +80.2% ROI
+      </span>
+      <span class="badge badge-blue">
+        753 trades
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ KPIs ═══════════════════════ -->
+<div class="kpi-grid">
+  <div class="kpi c-green">
+    <div class="kpi-label">P&L Total</div>
+    <div class="kpi-value">+$64.17</div>
+    <div class="kpi-sub">Sur capital $10,000</div>
+  </div>
+  <div class="kpi c-blue">
+    <div class="kpi-label">ROI Période</div>
+    <div class="kpi-value">+80.2%</div>
+    <div class="kpi-sub">2025-02-28 → 2026-02-28</div>
+  </div>
+  <div class="kpi c-cyan">
+    <div class="kpi-label">Trades exécutés</div>
+    <div class="kpi-value">753</div>
+    <div class="kpi-sub">sur 9,036 marchés scannés</div>
+  </div>
+  <div class="kpi c-green">
+    <div class="kpi-label">Win Rate</div>
+    <div class="kpi-value">96.7%</div>
+    <div class="kpi-sub">Arb binaire ≈ quasi-certitude</div>
+  </div>
+  <div class="kpi c-purple">
+    <div class="kpi-label">Sharpe Ratio</div>
+    <div class="kpi-value" style="color:#34d399">27.56</div>
+    <div class="kpi-sub">Excellent (> 1)</div>
+  </div>
+  <div class="kpi c-red">
+    <div class="kpi-label">Max Drawdown</div>
+    <div class="kpi-value">-$0.01</div>
+    <div class="kpi-sub">Pire perte de creux à pic</div>
+  </div>
+  <div class="kpi c-yellow">
+    <div class="kpi-label">Profit Factor</div>
+    <div class="kpi-value">542.54x</div>
+    <div class="kpi-sub">Gains bruts / Pertes brutes</div>
+  </div>
+  <div class="kpi c-blue">
+    <div class="kpi-label">Profit moyen / trade</div>
+    <div class="kpi-value">$0.085</div>
+    <div class="kpi-sub">Frais payés : $0.34</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ EQUITY CURVE ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📈 Courbe des Capitaux (Cumulative P&L)</div>
+  <div class="chart-card">
+    <canvas id="equityChart" height="110"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DRAWDOWN ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📉 Drawdown (creux depuis le pic)</div>
+  <div class="chart-card">
+    <canvas id="drawdownChart" height="70"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════ MONTHLY P&L + TRADES ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📅 Performance Mensuelle</div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">P&L par mois ($)</div>
+      <canvas id="monthlyPnlChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">Nombre de trades par mois</div>
+      <canvas id="monthlyTradesChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DISTRIBUTIONS ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">🔍 Distributions</div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">
+        Distribution des spreads YES+NO au moment du trade
+      </div>
+      <canvas id="spreadChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <div style="font-size:.85rem;color:#94a3b8;margin-bottom:10px">
+        Distribution des profits par trade ($)
+      </div>
+      <canvas id="profitHistChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCALING ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">💰 Scalabilité — Capital Investi vs Profit Projeté</div>
+  <div class="chart-card" style="margin-bottom:20px">
+    <canvas id="scalingChart" height="90"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Capital investi</th>
+          <th>Profit projeté</th>
+          <th>ROI estimé</th>
+          <th>Max Drawdown</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td><strong>$       100</strong></td>
+          <td style="color:#34d399"><strong>+$0.64</strong></td>
+          <td style="color:#34d399">+80.2%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$       500</strong></td>
+          <td style="color:#34d399"><strong>+$3.21</strong></td>
+          <td style="color:#34d399">+80.2%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$     1,000</strong></td>
+          <td style="color:#34d399"><strong>+$6.42</strong></td>
+          <td style="color:#34d399">+80.2%</td>
+          <td style="color:#f87171">-$0.00</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$     5,000</strong></td>
+          <td style="color:#34d399"><strong>+$32.09</strong></td>
+          <td style="color:#34d399">+80.2%</td>
+          <td style="color:#f87171">-$0.01</td>
+          <td>—</td>
+        </tr>
+        <tr class="scale-row-highlight">
+          <td><strong>$    10,000</strong>&nbsp;★</td>
+          <td style="color:#34d399"><strong>+$64.17</strong></td>
+          <td style="color:#34d399">+80.2%</td>
+          <td style="color:#f87171">-$0.01</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$    25,000</strong></td>
+          <td style="color:#34d399"><strong>+$160.43</strong></td>
+          <td style="color:#34d399">+80.2%</td>
+          <td style="color:#f87171">-$0.03</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>$    50,000</strong></td>
+          <td style="color:#34d399"><strong>+$275.26</strong></td>
+          <td style="color:#34d399">+68.8%</td>
+          <td style="color:#f87171">-$0.04</td>
+          <td><span style="color:#64748b;font-size:.8rem">Liquidité saturée — rendements réduits</span></td>
+        </tr>
+        <tr>
+          <td><strong>$   100,000</strong></td>
+          <td style="color:#34d399"><strong>+$447.17</strong></td>
+          <td style="color:#34d399">+55.9%</td>
+          <td style="color:#f87171">-$0.07</td>
+          <td><span style="color:#64748b;font-size:.8rem">Liquidité saturée — rendements réduits</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ AVERTISSEMENT ═══════════════════════ -->
+<div class="section">
+  <div class="warn">
+    <strong>⚠️ Avertissement :</strong>
+    Les performances passées ne garantissent pas les performances futures.
+    Ce backtest est une simulation sur données historiques réelles Polymarket, mais sans tenir compte
+    de la compétition entre bots, des changements de frais dynamiques, ou de la latence réelle d'exécution.
+    Toujours tester en <strong>DRY-RUN</strong> avant de déployer du capital réel.
+  </div>
+</div>
+
+<!-- ═══════════════════════ TRADES TABLE ═══════════════════════ -->
+<div class="section">
+  <div class="section-title">📋 Derniers Trades Simulés</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Date</th><th>Question (extrait)</th>
+          <th>Prix YES</th><th>Prix NO</th><th>Spread</th>
+          <th>Taille</th><th>Profit net</th><th>Résolution</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td style="color:#64748b">1</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will LeBron James score over 27.5 points tonight?">Will LeBron James score over 27.5 points tonight?…</td>
+          <td>$0.3682</td>
+          <td>$0.5206</td>
+          <td style="color:#fbbf24">$0.8888</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1108</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">2</td>
+          <td>2026-02-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Nvidia's stock close above $600 this week?">Will Nvidia's stock close above $600 this week?…</td>
+          <td>$0.4784</td>
+          <td>$0.4259</td>
+          <td style="color:#fbbf24">$0.9043</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0953</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">3</td>
+          <td>2026-02-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.4583</td>
+          <td>$0.4515</td>
+          <td style="color:#fbbf24">$0.9098</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0898</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">4</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Donald Trump win the New Hampshire primary?">Will Donald Trump win the New Hampshire primary?…</td>
+          <td>$0.4232</td>
+          <td>$0.4944</td>
+          <td style="color:#fbbf24">$0.9176</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.1641</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">5</td>
+          <td>2026-02-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.4358</td>
+          <td>$0.4717</td>
+          <td style="color:#fbbf24">$0.9075</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.1843</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">6</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Donald Trump win the New Hampshire primary?">Will Donald Trump win the New Hampshire primary?…</td>
+          <td>$0.4876</td>
+          <td>$0.4547</td>
+          <td style="color:#fbbf24">$0.9423</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0573</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">7</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.5577</td>
+          <td>$0.4086</td>
+          <td style="color:#94a3b8">$0.9663</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0333</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">8</td>
+          <td>2026-02-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.4980</td>
+          <td>$0.4434</td>
+          <td style="color:#fbbf24">$0.9414</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0582</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">9</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Cleveland Guardians win vs Chicago White Sox?">Will the Cleveland Guardians win vs Chicago White Sox?…</td>
+          <td>$0.4394</td>
+          <td>$0.4995</td>
+          <td style="color:#fbbf24">$0.9389</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0607</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">10</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Elon Musk post more than 50 tweets today?">Will Elon Musk post more than 50 tweets today?…</td>
+          <td>$0.4747</td>
+          <td>$0.4193</td>
+          <td style="color:#fbbf24">$0.8940</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1056</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">11</td>
+          <td>2026-02-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Sweden win against Denmark in handball?">Will Sweden win against Denmark in handball?…</td>
+          <td>$0.5723</td>
+          <td>$0.3889</td>
+          <td style="color:#94a3b8">$0.9612</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0384</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">12</td>
+          <td>2026-02-23</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will LeBron James score over 27.5 points tonight?">Will LeBron James score over 27.5 points tonight?…</td>
+          <td>$0.3977</td>
+          <td>$0.5305</td>
+          <td style="color:#fbbf24">$0.9282</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0714</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">13</td>
+          <td>2026-02-23</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.5113</td>
+          <td>$0.4122</td>
+          <td style="color:#fbbf24">$0.9235</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0761</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">14</td>
+          <td>2026-02-22</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.5546</td>
+          <td>$0.3981</td>
+          <td style="color:#94a3b8">$0.9527</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0469</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">15</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4051</td>
+          <td>$0.5382</td>
+          <td style="color:#fbbf24">$0.9433</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0563</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">16</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.4848</td>
+          <td>$0.4623</td>
+          <td style="color:#fbbf24">$0.9471</td>
+          <td>1</td>
+          <td class="c-red"><strong>$-0.0034</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">17</td>
+          <td>2026-02-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.4970</td>
+          <td>$0.4262</td>
+          <td style="color:#fbbf24">$0.9232</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0764</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">18</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.4132</td>
+          <td>$0.5079</td>
+          <td style="color:#fbbf24">$0.9211</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0785</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">19</td>
+          <td>2026-02-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.4616</td>
+          <td>$0.4278</td>
+          <td style="color:#fbbf24">$0.8894</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1102</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">20</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Cleveland Guardians win vs Chicago White Sox?">Will the Cleveland Guardians win vs Chicago White Sox?…</td>
+          <td>$0.4701</td>
+          <td>$0.4341</td>
+          <td style="color:#fbbf24">$0.9042</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0954</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">21</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.3878</td>
+          <td>$0.5419</td>
+          <td style="color:#fbbf24">$0.9297</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0699</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">22</td>
+          <td>2026-02-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.3853</td>
+          <td>$0.5473</td>
+          <td style="color:#fbbf24">$0.9326</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0670</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">23</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Taylor Swift attend the Super Bowl?">Will Taylor Swift attend the Super Bowl?…</td>
+          <td>$0.4788</td>
+          <td>$0.3958</td>
+          <td style="color:#fbbf24">$0.8746</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.2501</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">24</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Nvidia's stock close above $600 this week?">Will Nvidia's stock close above $600 this week?…</td>
+          <td>$0.3911</td>
+          <td>$0.5415</td>
+          <td style="color:#fbbf24">$0.9326</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0670</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">25</td>
+          <td>2026-02-18</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.5462</td>
+          <td>$0.3768</td>
+          <td style="color:#fbbf24">$0.9230</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0766</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">26</td>
+          <td>2026-02-17</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Celtics win the NBA Championship 2024?">Will the Celtics win the NBA Championship 2024?…</td>
+          <td>$0.5171</td>
+          <td>$0.3909</td>
+          <td style="color:#fbbf24">$0.9080</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0916</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">27</td>
+          <td>2026-02-17</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.3946</td>
+          <td>$0.5669</td>
+          <td style="color:#94a3b8">$0.9615</td>
+          <td>2</td>
+          <td class="c-red"><strong>$-0.0140</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">28</td>
+          <td>2026-02-17</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.5433</td>
+          <td>$0.3987</td>
+          <td style="color:#fbbf24">$0.9420</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0576</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">29</td>
+          <td>2026-02-16</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.3739</td>
+          <td>$0.5575</td>
+          <td style="color:#fbbf24">$0.9314</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0682</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">30</td>
+          <td>2026-02-16</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.4052</td>
+          <td>$0.5260</td>
+          <td style="color:#fbbf24">$0.9312</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0684</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">31</td>
+          <td>2026-02-15</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Nvidia's stock close above $600 this week?">Will Nvidia's stock close above $600 this week?…</td>
+          <td>$0.5648</td>
+          <td>$0.3816</td>
+          <td style="color:#fbbf24">$0.9464</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0532</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">32</td>
+          <td>2026-02-15</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Elon Musk post more than 50 tweets today?">Will Elon Musk post more than 50 tweets today?…</td>
+          <td>$0.4112</td>
+          <td>$0.5270</td>
+          <td style="color:#fbbf24">$0.9382</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.1228</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">33</td>
+          <td>2026-02-14</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.5318</td>
+          <td>$0.3807</td>
+          <td style="color:#fbbf24">$0.9125</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0871</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">34</td>
+          <td>2026-02-14</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.5618</td>
+          <td>$0.3919</td>
+          <td style="color:#94a3b8">$0.9537</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0459</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">35</td>
+          <td>2026-02-14</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.5376</td>
+          <td>$0.4170</td>
+          <td style="color:#94a3b8">$0.9546</td>
+          <td>1</td>
+          <td class="c-red"><strong>$-0.0060</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">36</td>
+          <td>2026-02-13</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the ECB cut rates in January 2024?">Will the ECB cut rates in January 2024?…</td>
+          <td>$0.4799</td>
+          <td>$0.4437</td>
+          <td style="color:#fbbf24">$0.9236</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0760</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">37</td>
+          <td>2026-02-13</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Celtics win the NBA Championship 2024?">Will the Celtics win the NBA Championship 2024?…</td>
+          <td>$0.4821</td>
+          <td>$0.4584</td>
+          <td style="color:#fbbf24">$0.9405</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0591</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">38</td>
+          <td>2026-02-12</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Sweden win against Denmark in handball?">Will Sweden win against Denmark in handball?…</td>
+          <td>$0.5244</td>
+          <td>$0.3968</td>
+          <td style="color:#fbbf24">$0.9212</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0784</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">39</td>
+          <td>2026-02-12</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.5355</td>
+          <td>$0.3841</td>
+          <td style="color:#fbbf24">$0.9196</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0800</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">40</td>
+          <td>2026-02-12</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the ECB cut rates in January 2024?">Will the ECB cut rates in January 2024?…</td>
+          <td>$0.3834</td>
+          <td>$0.5447</td>
+          <td style="color:#fbbf24">$0.9281</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0715</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">41</td>
+          <td>2026-02-12</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4700</td>
+          <td>$0.4349</td>
+          <td style="color:#fbbf24">$0.9049</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0947</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">42</td>
+          <td>2026-02-11</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.4879</td>
+          <td>$0.4112</td>
+          <td style="color:#fbbf24">$0.8991</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1005</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">43</td>
+          <td>2026-02-11</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.3968</td>
+          <td>$0.5122</td>
+          <td style="color:#fbbf24">$0.9090</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0906</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">44</td>
+          <td>2026-02-10</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.4006</td>
+          <td>$0.5075</td>
+          <td style="color:#fbbf24">$0.9081</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0915</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">45</td>
+          <td>2026-02-10</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.4260</td>
+          <td>$0.4480</td>
+          <td style="color:#fbbf24">$0.8740</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1257</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">46</td>
+          <td>2026-02-10</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the S&P 500 end 2024 above 5000?">Will the S&P 500 end 2024 above 5000?…</td>
+          <td>$0.5353</td>
+          <td>$0.3986</td>
+          <td style="color:#fbbf24">$0.9339</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0657</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">47</td>
+          <td>2026-02-10</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.4899</td>
+          <td>$0.4737</td>
+          <td style="color:#94a3b8">$0.9636</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0360</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">48</td>
+          <td>2026-02-09</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.5108</td>
+          <td>$0.4014</td>
+          <td style="color:#fbbf24">$0.9122</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0874</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">49</td>
+          <td>2026-02-08</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Donald Trump win the New Hampshire primary?">Will Donald Trump win the New Hampshire primary?…</td>
+          <td>$0.5375</td>
+          <td>$0.4109</td>
+          <td style="color:#fbbf24">$0.9484</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0512</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">50</td>
+          <td>2026-02-07</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will LeBron James score over 27.5 points tonight?">Will LeBron James score over 27.5 points tonight?…</td>
+          <td>$0.3751</td>
+          <td>$0.5002</td>
+          <td style="color:#fbbf24">$0.8753</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1243</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">51</td>
+          <td>2026-02-07</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.3766</td>
+          <td>$0.5639</td>
+          <td style="color:#fbbf24">$0.9405</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0591</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">52</td>
+          <td>2026-02-06</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.4682</td>
+          <td>$0.4574</td>
+          <td style="color:#fbbf24">$0.9256</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0740</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">53</td>
+          <td>2026-02-06</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Donald Trump win the New Hampshire primary?">Will Donald Trump win the New Hampshire primary?…</td>
+          <td>$0.5246</td>
+          <td>$0.4508</td>
+          <td style="color:#94a3b8">$0.9754</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0242</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">54</td>
+          <td>2026-02-06</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the ECB cut rates in January 2024?">Will the ECB cut rates in January 2024?…</td>
+          <td>$0.3896</td>
+          <td>$0.5289</td>
+          <td style="color:#fbbf24">$0.9185</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0811</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">55</td>
+          <td>2026-02-05</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.4474</td>
+          <td>$0.5000</td>
+          <td style="color:#fbbf24">$0.9474</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0522</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">56</td>
+          <td>2026-02-05</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.5126</td>
+          <td>$0.4315</td>
+          <td style="color:#fbbf24">$0.9441</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0555</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">57</td>
+          <td>2026-02-04</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.5612</td>
+          <td>$0.3782</td>
+          <td style="color:#fbbf24">$0.9394</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0602</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">58</td>
+          <td>2026-02-04</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the ECB cut rates in January 2024?">Will the ECB cut rates in January 2024?…</td>
+          <td>$0.4613</td>
+          <td>$0.4789</td>
+          <td style="color:#fbbf24">$0.9402</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.1188</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">59</td>
+          <td>2026-02-03</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the S&P 500 end 2024 above 5000?">Will the S&P 500 end 2024 above 5000?…</td>
+          <td>$0.3804</td>
+          <td>$0.5284</td>
+          <td style="color:#fbbf24">$0.9088</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0908</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">60</td>
+          <td>2026-02-03</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.4539</td>
+          <td>$0.4899</td>
+          <td style="color:#fbbf24">$0.9438</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0558</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">61</td>
+          <td>2026-02-03</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Elon Musk post more than 50 tweets today?">Will Elon Musk post more than 50 tweets today?…</td>
+          <td>$0.4989</td>
+          <td>$0.4567</td>
+          <td style="color:#94a3b8">$0.9556</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0440</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">62</td>
+          <td>2026-02-02</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.3699</td>
+          <td>$0.5273</td>
+          <td style="color:#fbbf24">$0.8972</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.2049</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">63</td>
+          <td>2026-02-02</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Cleveland Guardians win vs Chicago White Sox?">Will the Cleveland Guardians win vs Chicago White Sox?…</td>
+          <td>$0.5306</td>
+          <td>$0.3887</td>
+          <td style="color:#fbbf24">$0.9193</td>
+          <td>5</td>
+          <td class="c-green"><strong>+$0.4017</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">64</td>
+          <td>2026-02-01</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.4517</td>
+          <td>$0.4669</td>
+          <td style="color:#fbbf24">$0.9186</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0810</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">65</td>
+          <td>2026-01-31</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Celtics win the NBA Championship 2024?">Will the Celtics win the NBA Championship 2024?…</td>
+          <td>$0.4833</td>
+          <td>$0.4357</td>
+          <td style="color:#fbbf24">$0.9190</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0806</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">66</td>
+          <td>2026-01-31</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Elon Musk post more than 50 tweets today?">Will Elon Musk post more than 50 tweets today?…</td>
+          <td>$0.3997</td>
+          <td>$0.5511</td>
+          <td style="color:#94a3b8">$0.9508</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0488</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">67</td>
+          <td>2026-01-31</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Donald Trump win the New Hampshire primary?">Will Donald Trump win the New Hampshire primary?…</td>
+          <td>$0.4441</td>
+          <td>$0.4654</td>
+          <td style="color:#fbbf24">$0.9095</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0901</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">68</td>
+          <td>2026-01-31</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Elon Musk post more than 50 tweets today?">Will Elon Musk post more than 50 tweets today?…</td>
+          <td>$0.5352</td>
+          <td>$0.3659</td>
+          <td style="color:#fbbf24">$0.9011</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0985</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">69</td>
+          <td>2026-01-30</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.5378</td>
+          <td>$0.3906</td>
+          <td style="color:#fbbf24">$0.9284</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0712</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">70</td>
+          <td>2026-01-29</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4132</td>
+          <td>$0.5112</td>
+          <td style="color:#fbbf24">$0.9244</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0752</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">71</td>
+          <td>2026-01-29</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.3861</td>
+          <td>$0.5271</td>
+          <td style="color:#fbbf24">$0.9132</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0864</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">72</td>
+          <td>2026-01-29</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Celtics win the NBA Championship 2024?">Will the Celtics win the NBA Championship 2024?…</td>
+          <td>$0.4997</td>
+          <td>$0.4091</td>
+          <td style="color:#fbbf24">$0.9088</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0908</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">73</td>
+          <td>2026-01-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Lionel Messi win the Ballon d'Or 2024?">Will Lionel Messi win the Ballon d'Or 2024?…</td>
+          <td>$0.4634</td>
+          <td>$0.4753</td>
+          <td style="color:#fbbf24">$0.9387</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0609</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">74</td>
+          <td>2026-01-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.3996</td>
+          <td>$0.4736</td>
+          <td style="color:#fbbf24">$0.8732</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1265</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">75</td>
+          <td>2026-01-28</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.4747</td>
+          <td>$0.4549</td>
+          <td style="color:#fbbf24">$0.9296</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0700</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">76</td>
+          <td>2026-01-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.4771</td>
+          <td>$0.4881</td>
+          <td style="color:#94a3b8">$0.9652</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.0688</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">77</td>
+          <td>2026-01-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.4788</td>
+          <td>$0.4451</td>
+          <td style="color:#fbbf24">$0.9239</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0757</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">78</td>
+          <td>2026-01-27</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.5065</td>
+          <td>$0.3828</td>
+          <td style="color:#fbbf24">$0.8893</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1103</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">79</td>
+          <td>2026-01-26</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.5204</td>
+          <td>$0.4122</td>
+          <td style="color:#fbbf24">$0.9326</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0670</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">80</td>
+          <td>2026-01-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Sweden win against Denmark in handball?">Will Sweden win against Denmark in handball?…</td>
+          <td>$0.3788</td>
+          <td>$0.5083</td>
+          <td style="color:#fbbf24">$0.8871</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1125</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">81</td>
+          <td>2026-01-25</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.4881</td>
+          <td>$0.4302</td>
+          <td style="color:#fbbf24">$0.9183</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.1627</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">82</td>
+          <td>2026-01-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.4730</td>
+          <td>$0.4417</td>
+          <td style="color:#fbbf24">$0.9147</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0849</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">83</td>
+          <td>2026-01-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Bills cover the spread vs the Chiefs?">Will the Bills cover the spread vs the Chiefs?…</td>
+          <td>$0.4340</td>
+          <td>$0.5038</td>
+          <td style="color:#fbbf24">$0.9378</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.1236</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">84</td>
+          <td>2026-01-24</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.5282</td>
+          <td>$0.3574</td>
+          <td style="color:#fbbf24">$0.8856</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1140</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">85</td>
+          <td>2026-01-23</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Rafa Nadal win the French Open 2024?">Will Rafa Nadal win the French Open 2024?…</td>
+          <td>$0.4740</td>
+          <td>$0.4551</td>
+          <td style="color:#fbbf24">$0.9291</td>
+          <td>2</td>
+          <td class="c-green"><strong>+$0.1411</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">86</td>
+          <td>2026-01-23</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.5505</td>
+          <td>$0.3752</td>
+          <td style="color:#fbbf24">$0.9257</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0739</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">87</td>
+          <td>2026-01-23</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.3837</td>
+          <td>$0.5390</td>
+          <td style="color:#fbbf24">$0.9227</td>
+          <td>1</td>
+          <td class="c-red"><strong>$-0.0029</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">88</td>
+          <td>2026-01-22</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.4400</td>
+          <td>$0.4812</td>
+          <td style="color:#fbbf24">$0.9212</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0784</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">89</td>
+          <td>2026-01-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.5165</td>
+          <td>$0.4037</td>
+          <td style="color:#fbbf24">$0.9202</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0794</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">90</td>
+          <td>2026-01-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will GPT-5 be released before March 2024?">Will GPT-5 be released before March 2024?…</td>
+          <td>$0.5187</td>
+          <td>$0.4265</td>
+          <td style="color:#fbbf24">$0.9452</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0544</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">91</td>
+          <td>2026-01-21</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the ECB cut rates in January 2024?">Will the ECB cut rates in January 2024?…</td>
+          <td>$0.4111</td>
+          <td>$0.5392</td>
+          <td style="color:#94a3b8">$0.9503</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0493</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">92</td>
+          <td>2026-01-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Bitcoin exceed $60,000 before February 2024?">Will Bitcoin exceed $60,000 before February 2024?…</td>
+          <td>$0.5251</td>
+          <td>$0.3739</td>
+          <td style="color:#fbbf24">$0.8990</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1006</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">93</td>
+          <td>2026-01-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will LeBron James score over 27.5 points tonight?">Will LeBron James score over 27.5 points tonight?…</td>
+          <td>$0.4825</td>
+          <td>$0.4251</td>
+          <td style="color:#fbbf24">$0.9076</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0920</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">94</td>
+          <td>2026-01-20</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Patriots make the playoffs this season?">Will the Patriots make the playoffs this season?…</td>
+          <td>$0.5492</td>
+          <td>$0.3812</td>
+          <td style="color:#fbbf24">$0.9304</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0692</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">95</td>
+          <td>2026-01-19</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Apple announce Vision Pro sales above 1M units Q1?">Will Apple announce Vision Pro sales above 1M units Q1?…</td>
+          <td>$0.5314</td>
+          <td>$0.4099</td>
+          <td style="color:#fbbf24">$0.9413</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0583</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">96</td>
+          <td>2026-01-17</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.3986</td>
+          <td>$0.5219</td>
+          <td style="color:#fbbf24">$0.9205</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0791</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">97</td>
+          <td>2026-01-17</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.4977</td>
+          <td>$0.4741</td>
+          <td style="color:#94a3b8">$0.9718</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0278</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">98</td>
+          <td>2026-01-17</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will Novak Djokovic win the Australian Open 2024?">Will Novak Djokovic win the Australian Open 2024?…</td>
+          <td>$0.3848</td>
+          <td>$0.4966</td>
+          <td style="color:#fbbf24">$0.8814</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.1182</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">99</td>
+          <td>2026-01-16</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will the Lakers beat the Warriors tonight?">Will the Lakers beat the Warriors tonight?…</td>
+          <td>$0.4792</td>
+          <td>$0.4493</td>
+          <td style="color:#fbbf24">$0.9285</td>
+          <td>1</td>
+          <td class="c-green"><strong>+$0.0711</strong></td>
+          <td><span class="tag tag-red">NO</span></td>
+        </tr>
+        <tr>
+          <td style="color:#64748b">100</td>
+          <td>2026-01-16</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"
+              title="Will there be a US government shutdown in Q1 2024?">Will there be a US government shutdown in Q1 2024?…</td>
+          <td>$0.3970</td>
+          <td>$0.5298</td>
+          <td style="color:#fbbf24">$0.9268</td>
+          <td>3</td>
+          <td class="c-green"><strong>+$0.2185</strong></td>
+          <td><span class="tag tag-green">YES</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  Polymarket Arbitrage Bot — Rapport généré le 28/02/2026 à 22:31 &nbsp;|&nbsp;
+  Données : Polymarket Gamma API &nbsp;|&nbsp; ⚠️ Usage éducatif uniquement
+</footer>
+
+<script>
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = '#2d3748';
+Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+
+const eqDates  = ["2025-03-11", "2025-03-12", "2025-03-13", "2025-03-14", "2025-03-15", "2025-03-17", "2025-03-18", "2025-03-19", "2025-03-20", "2025-03-20", "2025-03-21", "2025-03-21", "2025-03-22", "2025-03-24", "2025-03-25", "2025-03-25", "2025-03-25", "2025-03-26", "2025-03-26", "2025-03-27", "2025-03-27", "2025-03-27", "2025-03-28", "2025-03-28", "2025-03-28", "2025-03-29", "2025-03-29", "2025-03-29", "2025-03-30", "2025-03-31", "2025-03-31", "2025-04-01", "2025-04-01", "2025-04-01", "2025-04-02", "2025-04-02", "2025-04-03", "2025-04-03", "2025-04-04", "2025-04-05", "2025-04-05", "2025-04-05", "2025-04-06", "2025-04-06", "2025-04-07", "2025-04-08", "2025-04-08", "2025-04-08", "2025-04-09", "2025-04-09", "2025-04-09", "2025-04-10", "2025-04-10", "2025-04-10", "2025-04-11", "2025-04-11", "2025-04-11", "2025-04-12", "2025-04-12", "2025-04-12", "2025-04-13", "2025-04-14", "2025-04-15", "2025-04-15", "2025-04-15", "2025-04-16", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-17", "2025-04-18", "2025-04-18", "2025-04-19", "2025-04-20", "2025-04-21", "2025-04-22", "2025-04-22", "2025-04-23", "2025-04-23", "2025-04-23", "2025-04-24", "2025-04-24", "2025-04-25", "2025-04-26", "2025-04-26", "2025-04-26", "2025-04-26", "2025-04-27", "2025-04-28", "2025-04-29", "2025-04-29", "2025-04-29", "2025-04-30", "2025-04-30", "2025-05-01", "2025-05-01", "2025-05-02", "2025-05-02", "2025-05-02", "2025-05-03", "2025-05-03", "2025-05-04", "2025-05-04", "2025-05-05", "2025-05-06", "2025-05-06", "2025-05-06", "2025-05-07", "2025-05-07", "2025-05-07", "2025-05-08", "2025-05-08", "2025-05-08", "2025-05-09", "2025-05-09", "2025-05-09", "2025-05-09", "2025-05-10", "2025-05-10", "2025-05-10", "2025-05-11", "2025-05-12", "2025-05-13", "2025-05-13", "2025-05-13", "2025-05-14", "2025-05-14", "2025-05-15", "2025-05-15", "2025-05-15", "2025-05-16", "2025-05-16", "2025-05-16", "2025-05-17", "2025-05-18", "2025-05-19", "2025-05-20", "2025-05-20", "2025-05-21", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-24", "2025-05-24", "2025-05-24", "2025-05-25", "2025-05-26", "2025-05-27", "2025-05-27", "2025-05-28", "2025-05-28", "2025-05-29", "2025-05-29", "2025-05-29", "2025-05-30", "2025-05-31", "2025-05-31", "2025-05-31", "2025-06-01", "2025-06-01", "2025-06-02", "2025-06-03", "2025-06-03", "2025-06-04", "2025-06-04", "2025-06-05", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-06", "2025-06-07", "2025-06-07", "2025-06-07", "2025-06-08", "2025-06-09", "2025-06-10", "2025-06-10", "2025-06-10", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-12", "2025-06-12", "2025-06-13", "2025-06-13", "2025-06-13", "2025-06-14", "2025-06-14", "2025-06-14", "2025-06-14", "2025-06-15", "2025-06-15", "2025-06-16", "2025-06-17", "2025-06-17", "2025-06-18", "2025-06-18", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-19", "2025-06-20", "2025-06-20", "2025-06-20", "2025-06-21", "2025-06-21", "2025-06-21", "2025-06-22", "2025-06-23", "2025-06-23", "2025-06-24", "2025-06-24", "2025-06-24", "2025-06-25", "2025-06-25", "2025-06-26", "2025-06-26", "2025-06-27", "2025-06-27", "2025-06-27", "2025-06-28", "2025-06-28", "2025-06-29", "2025-06-30", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-02", "2025-07-02", "2025-07-03", "2025-07-03", "2025-07-03", "2025-07-04", "2025-07-04", "2025-07-05", "2025-07-05", "2025-07-05", "2025-07-05", "2025-07-06", "2025-07-06", "2025-07-07", "2025-07-08", "2025-07-08", "2025-07-09", "2025-07-09", "2025-07-10", "2025-07-10", "2025-07-11", "2025-07-11", "2025-07-11", "2025-07-12", "2025-07-12", "2025-07-13", "2025-07-14", "2025-07-15", "2025-07-15", "2025-07-15", "2025-07-16", "2025-07-16", "2025-07-16", "2025-07-17", "2025-07-17", "2025-07-18", "2025-07-18", "2025-07-18", "2025-07-18", "2025-07-19", "2025-07-19", "2025-07-19", "2025-07-20", "2025-07-20", "2025-07-21", "2025-07-21", "2025-07-22", "2025-07-22", "2025-07-22", "2025-07-23", "2025-07-23", "2025-07-23", "2025-07-24", "2025-07-24", "2025-07-24", "2025-07-25", "2025-07-25", "2025-07-26", "2025-07-26", "2025-07-27", "2025-07-28", "2025-07-28", "2025-07-29", "2025-07-29", "2025-07-30", "2025-07-30", "2025-07-31", "2025-07-31", "2025-07-31", "2025-08-01", "2025-08-01", "2025-08-02", "2025-08-02", "2025-08-02", "2025-08-03", "2025-08-04", "2025-08-05", "2025-08-05", "2025-08-06", "2025-08-06", "2025-08-06", "2025-08-07", "2025-08-07", "2025-08-07", "2025-08-08", "2025-08-08", "2025-08-08", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-09", "2025-08-10", "2025-08-10", "2025-08-11", "2025-08-11", "2025-08-12", "2025-08-12", "2025-08-12", "2025-08-13", "2025-08-13", "2025-08-14", "2025-08-14", "2025-08-14", "2025-08-15", "2025-08-15", "2025-08-16", "2025-08-16", "2025-08-16", "2025-08-17", "2025-08-18", "2025-08-18", "2025-08-19", "2025-08-19", "2025-08-20", "2025-08-20", "2025-08-21", "2025-08-21", "2025-08-22", "2025-08-23", "2025-08-23", "2025-08-23", "2025-08-24", "2025-08-25", "2025-08-26", "2025-08-26", "2025-08-27", "2025-08-27", "2025-08-27", "2025-08-28", "2025-08-29", "2025-08-29", "2025-08-30", "2025-08-30", "2025-08-31", "2025-08-31", "2025-09-02", "2025-09-02", "2025-09-02", "2025-09-03", "2025-09-04", "2025-09-04", "2025-09-04", "2025-09-05", "2025-09-05", "2025-09-06", "2025-09-06", "2025-09-07", "2025-09-09", "2025-09-09", "2025-09-10", "2025-09-10", "2025-09-11", "2025-09-11", "2025-09-11", "2025-09-12", "2025-09-12", "2025-09-12", "2025-09-13", "2025-09-13", "2025-09-13", "2025-09-14", "2025-09-14", "2025-09-15", "2025-09-16", "2025-09-16", "2025-09-17", "2025-09-18", "2025-09-18", "2025-09-19", "2025-09-19", "2025-09-20", "2025-09-20", "2025-09-21", "2025-09-21", "2025-09-22", "2025-09-23", "2025-09-23", "2025-09-24", "2025-09-24", "2025-09-24", "2025-09-25", "2025-09-25", "2025-09-25", "2025-09-26", "2025-09-26", "2025-09-27", "2025-09-27", "2025-09-28", "2025-09-29", "2025-09-30", "2025-09-30", "2025-10-01", "2025-10-01", "2025-10-02", "2025-10-02", "2025-10-02", "2025-10-03", "2025-10-03", "2025-10-04", "2025-10-04", "2025-10-05", "2025-10-06", "2025-10-07", "2025-10-07", "2025-10-08", "2025-10-08", "2025-10-09", "2025-10-09", "2025-10-09", "2025-10-10", "2025-10-10", "2025-10-11", "2025-10-11", "2025-10-11", "2025-10-12", "2025-10-13", "2025-10-13", "2025-10-14", "2025-10-14", "2025-10-14", "2025-10-15", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-18", "2025-10-18", "2025-10-18", "2025-10-19", "2025-10-19", "2025-10-20", "2025-10-21", "2025-10-21", "2025-10-21", "2025-10-22", "2025-10-22", "2025-10-22", "2025-10-23", "2025-10-23", "2025-10-24", "2025-10-24", "2025-10-24", "2025-10-25", "2025-10-25", "2025-10-25", "2025-10-26", "2025-10-27", "2025-10-28", "2025-10-28", "2025-10-29", "2025-10-30", "2025-10-30", "2025-10-31", "2025-10-31", "2025-10-31", "2025-11-01", "2025-11-01", "2025-11-01", "2025-11-01", "2025-11-02", "2025-11-03", "2025-11-03", "2025-11-04", "2025-11-04", "2025-11-05", "2025-11-05", "2025-11-05", "2025-11-06", "2025-11-06", "2025-11-06", "2025-11-07", "2025-11-07", "2025-11-07", "2025-11-08", "2025-11-08", "2025-11-08", "2025-11-09", "2025-11-10", "2025-11-11", "2025-11-11", "2025-11-11", "2025-11-12", "2025-11-12", "2025-11-13", "2025-11-13", "2025-11-13", "2025-11-14", "2025-11-14", "2025-11-15", "2025-11-15", "2025-11-15", "2025-11-16", "2025-11-17", "2025-11-18", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-20", "2025-11-20", "2025-11-20", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-21", "2025-11-22", "2025-11-22", "2025-11-23", "2025-11-24", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-25", "2025-11-26", "2025-11-26", "2025-11-27", "2025-11-27", "2025-11-28", "2025-11-28", "2025-11-29", "2025-11-29", "2025-11-30", "2025-12-01", "2025-12-02", "2025-12-02", "2025-12-02", "2025-12-02", "2025-12-03", "2025-12-03", "2025-12-04", "2025-12-04", "2025-12-04", "2025-12-05", "2025-12-05", "2025-12-05", "2025-12-06", "2025-12-06", "2025-12-06", "2025-12-07", "2025-12-08", "2025-12-08", "2025-12-09", "2025-12-09", "2025-12-09", "2025-12-09", "2025-12-10", "2025-12-10", "2025-12-10", "2025-12-11", "2025-12-11", "2025-12-12", "2025-12-12", "2025-12-12", "2025-12-13", "2025-12-13", "2025-12-14", "2025-12-15", "2025-12-15", "2025-12-16", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-18", "2025-12-18", "2025-12-19", "2025-12-19", "2025-12-20", "2025-12-20", "2025-12-20", "2025-12-21", "2025-12-21", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-24", "2025-12-25", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-27", "2025-12-27", "2025-12-27", "2025-12-28", "2025-12-29", "2025-12-29", "2025-12-30", "2025-12-30", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-01", "2026-01-01", "2026-01-02", "2026-01-02", "2026-01-03", "2026-01-03", "2026-01-03", "2026-01-04", "2026-01-04", "2026-01-05", "2026-01-05", "2026-01-06", "2026-01-06", "2026-01-06", "2026-01-06", "2026-01-07", "2026-01-07", "2026-01-08", "2026-01-08", "2026-01-08", "2026-01-09", "2026-01-09", "2026-01-10", "2026-01-10", "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-13", "2026-01-13", "2026-01-14", "2026-01-14", "2026-01-14", "2026-01-15", "2026-01-15", "2026-01-15", "2026-01-16", "2026-01-16", "2026-01-16", "2026-01-17", "2026-01-17", "2026-01-17", "2026-01-19", "2026-01-20", "2026-01-20", "2026-01-20", "2026-01-21", "2026-01-21", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-23", "2026-01-23", "2026-01-24", "2026-01-24", "2026-01-24", "2026-01-25", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-27", "2026-01-27", "2026-01-28", "2026-01-28", "2026-01-28", "2026-01-29", "2026-01-29", "2026-01-29", "2026-01-30", "2026-01-31", "2026-01-31", "2026-01-31", "2026-01-31", "2026-02-01", "2026-02-02", "2026-02-02", "2026-02-03", "2026-02-03", "2026-02-03", "2026-02-04", "2026-02-04", "2026-02-05", "2026-02-05", "2026-02-06", "2026-02-06", "2026-02-06", "2026-02-07", "2026-02-07", "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-10", "2026-02-11", "2026-02-11", "2026-02-12", "2026-02-12", "2026-02-12", "2026-02-12", "2026-02-13", "2026-02-13", "2026-02-14", "2026-02-14", "2026-02-14", "2026-02-15", "2026-02-15", "2026-02-16", "2026-02-16", "2026-02-17", "2026-02-17", "2026-02-17", "2026-02-18", "2026-02-18", "2026-02-18", "2026-02-19", "2026-02-19", "2026-02-19", "2026-02-20", "2026-02-20", "2026-02-21", "2026-02-21", "2026-02-21", "2026-02-22", "2026-02-23", "2026-02-23", "2026-02-24", "2026-02-24", "2026-02-24", "2026-02-25", "2026-02-25", "2026-02-25", "2026-02-26", "2026-02-26", "2026-02-27", "2026-02-28", "2026-02-28"];
+const eqValues = [0.0988, 0.2711, 0.3783, 0.4937, 0.6088, 0.7319, 0.8139, 0.8375, 0.9203, 0.9772, 1.0442, 1.1197, 1.1725, 1.2127, 1.3361, 1.4525, 1.5061, 1.5661, 1.6131, 1.7099, 1.7914, 1.8642, 1.9315, 1.9768, 2.075, 2.1846, 2.2358, 2.2792, 2.3579, 2.4374, 2.4781, 2.5774, 2.6327, 2.7412, 2.8813, 2.9185, 2.9997, 3.0869, 3.1965, 3.3294, 3.3877, 3.5026, 3.5744, 3.9631, 4.0579, 4.1551, 4.2741, 4.4009, 4.5143, 4.6231, 4.7236, 4.8307, 4.8822, 4.9407, 4.9902, 5.0498, 5.1144, 5.2777, 5.3589, 5.4402, 5.5321, 5.5636, 5.6363, 5.7125, 5.7825, 5.8518, 5.9422, 6.0383, 6.164, 6.2774, 6.4691, 6.7587, 6.8397, 6.9481, 7.1448, 7.241, 7.2715, 7.3817, 7.4465, 7.494, 7.6231, 7.7019, 7.7351, 7.7825, 7.8933, 7.9832, 8.0588, 8.1224, 8.1717, 8.2423, 8.3275, 8.3931, 8.4654, 8.5516, 8.6682, 8.7321, 8.8582, 8.9307, 8.9983, 9.0957, 9.2001, 9.3494, 9.4369, 9.5167, 9.71, 9.7711, 9.8682, 9.9426, 9.9897, 10.0433, 10.1013, 10.2738, 10.3709, 10.4123, 10.4954, 10.5694, 10.657, 10.7096, 10.806, 10.8734, 10.9402, 11.0294, 11.131, 11.3595, 11.4298, 11.5485, 11.6351, 11.7407, 11.7796, 11.8596, 11.9543, 12.0346, 12.1369, 12.2471, 12.3525, 12.601, 12.6914, 12.7696, 12.7654, 12.8933, 13.0214, 13.0933, 13.1417, 13.1875, 13.2701, 13.3385, 13.3319, 13.427, 13.5082, 13.5064, 13.5414, 13.5625, 13.6702, 13.7418, 13.7884, 13.8548, 13.9439, 14.0475, 14.1013, 14.1667, 14.3032, 14.3853, 14.3805, 14.4304, 14.4276, 14.5118, 14.556, 14.6602, 14.8637, 14.9365, 15.0248, 15.0958, 15.2233, 15.3194, 15.3178, 15.3538, 15.4129, 15.5302, 15.8474, 15.9696, 16.0401, 16.0999, 16.2125, 16.2581, 16.3473, 16.4998, 16.5525, 16.5967, 16.6601, 16.7038, 16.8045, 16.8477, 16.9202, 16.9723, 17.0525, 17.1164, 17.1979, 17.279, 17.3907, 17.3901, 17.4609, 17.5335, 17.6029, 17.6376, 17.7245, 17.7954, 17.8613, 17.912, 18.0365, 18.0789, 18.162, 18.1549, 18.2506, 18.3453, 18.4335, 18.5252, 18.5572, 18.5953, 18.7075, 18.8222, 18.9243, 18.9845, 19.1166, 19.2043, 19.2709, 19.362, 19.4767, 19.5281, 19.6211, 19.6889, 19.7955, 19.8732, 19.959, 20.0267, 20.1296, 20.2185, 20.2849, 20.3722, 20.5275, 20.697, 20.8103, 20.8061, 20.8859, 20.9985, 21.035, 21.0887, 21.1762, 21.2427, 21.2991, 21.3325, 21.4431, 21.5268, 21.5533, 21.6296, 21.7059, 21.8165, 21.9295, 22.0319, 22.0301, 22.1043, 22.2058, 22.2857, 22.3177, 22.4234, 22.4818, 22.5744, 22.6342, 22.7089, 22.7699, 22.8337, 22.9652, 23.037, 23.1431, 23.2938, 23.3505, 23.5268, 23.604, 23.7204, 23.7944, 23.8483, 23.9256, 23.9687, 24.0403, 24.141, 24.1686, 24.2306, 24.2604, 24.3557, 24.394, 24.4774, 24.4767, 24.5392, 24.7514, 24.8067, 24.8995, 24.9512, 25.019, 25.0711, 25.1608, 25.2363, 25.3288, 25.3823, 25.4452, 25.5048, 25.6649, 25.7467, 25.8224, 25.869, 26.0782, 26.1285, 26.1967, 26.2705, 26.4216, 26.8348, 26.9286, 27.0179, 27.056, 27.1241, 27.1981, 27.2784, 27.3322, 27.4326, 27.4966, 27.5866, 27.615, 27.6898, 27.8229, 27.9563, 28.0452, 28.1727, 28.2481, 28.3148, 28.382, 28.4943, 28.5753, 28.6835, 28.7493, 28.919, 28.9537, 29.0138, 29.0698, 29.1372, 29.2104, 29.2981, 29.4338, 29.4827, 29.6212, 29.7298, 29.8142, 30.0191, 30.1836, 30.218, 30.3194, 30.3912, 30.4974, 30.5816, 30.6401, 30.7042, 30.7764, 30.8352, 30.8975, 30.9659, 31.0738, 31.1544, 31.2413, 31.3292, 31.3965, 31.4874, 31.5854, 31.7843, 31.9864, 32.0944, 32.167, 32.2767, 32.3965, 32.493, 32.582, 32.6968, 32.792, 32.883, 32.9427, 32.9781, 33.0523, 33.1189, 33.1912, 33.2751, 33.3458, 33.4192, 33.4654, 33.5097, 33.5903, 33.6971, 33.7709, 33.8714, 33.9777, 34.0454, 34.1532, 34.2167, 34.2819, 34.3287, 34.4201, 34.5136, 34.5757, 34.6279, 34.7095, 34.801, 34.8566, 34.9168, 34.998, 35.2087, 35.2846, 35.3855, 35.4593, 35.5082, 35.6006, 35.6578, 35.7064, 35.7896, 35.8755, 35.9347, 36.1238, 36.2315, 36.287, 36.3633, 36.4336, 36.479, 36.5437, 36.5995, 36.6566, 36.7474, 36.8234, 36.8957, 36.9751, 37.0328, 37.1669, 37.2708, 37.3201, 37.4169, 37.4752, 37.5647, 37.6625, 37.7564, 37.8772, 38.0036, 38.0514, 38.1295, 38.2138, 38.3134, 38.4042, 38.5026, 38.5958, 38.6547, 38.715, 38.7956, 38.8672, 38.9244, 38.918, 39.0442, 39.1283, 39.2379, 39.3079, 39.4212, 39.525, 39.5915, 39.6618, 39.7418, 39.86, 39.8572, 39.9112, 40.0283, 40.0929, 40.2414, 40.3123, 40.4618, 40.5656, 40.6616, 40.6614, 40.7341, 40.9534, 41.0162, 41.1187, 41.1942, 41.276, 41.3147, 41.3055, 41.3827, 41.4605, 41.522, 41.5868, 41.6516, 41.6866, 41.739, 41.8236, 41.9429, 41.9915, 42.0543, 42.1293, 42.2548, 42.3252, 42.4186, 42.4788, 42.5457, 42.7278, 42.8196, 42.918, 42.9578, 43.0155, 43.0888, 43.1242, 43.2393, 43.352, 43.4151, 43.4792, 43.5647, 43.6199, 43.6142, 43.7002, 43.7775, 43.9717, 44.0541, 44.1251, 44.1948, 44.276, 44.3558, 44.3868, 44.3786, 44.4409, 44.5077, 44.6146, 44.8316, 44.9018, 44.9313, 44.9292, 44.9884, 45.0479, 45.1206, 45.1901, 45.2161, 45.3097, 45.3879, 45.5836, 45.9688, 46.0835, 46.1588, 46.2457, 46.3386, 46.4214, 46.488, 46.5708, 46.6959, 46.7976, 46.8394, 46.8869, 47.0148, 47.1313, 47.2111, 47.25, 47.3179, 47.4788, 47.5739, 47.638, 47.6947, 47.7583, 47.8614, 47.9761, 48.0537, 48.257, 48.2492, 48.3134, 48.4266, 48.486, 48.5664, 48.7259, 48.8936, 48.953, 48.9974, 49.0955, 49.1475, 49.2226, 49.3002, 49.4607, 49.5229, 49.5729, 49.6812, 49.7855, 49.853, 49.8942, 50.0082, 50.0776, 50.1268, 50.2053, 50.2883, 50.513, 50.6044, 50.664, 50.7303, 50.8221, 50.8889, 50.9587, 51.1518, 51.2408, 51.2829, 51.4498, 51.5202, 51.8683, 51.9922, 52.056, 52.1295, 52.2019, 52.1965, 52.2189, 52.2107, 52.2677, 52.3833, 52.4582, 52.5317, 52.5889, 52.6449, 52.7096, 52.7548, 52.7876, 52.8505, 52.926, 53.0062, 53.0393, 53.1511, 53.2404, 53.3122, 53.3667, 53.4711, 53.5634, 53.6361, 53.9946, 54.0859, 54.1455, 54.2551, 54.35, 54.4174, 54.4939, 54.5289, 54.6175, 54.7936, 54.8342, 54.9328, 54.9877, 55.1312, 55.2018, 55.2824, 55.3812, 55.4285, 55.5282, 55.5813, 55.6987, 55.9172, 55.9883, 56.1065, 56.1343, 56.2134, 56.2717, 56.3409, 56.4329, 56.5335, 56.5828, 56.6372, 56.7166, 56.795, 56.7921, 56.866, 57.0071, 57.1211, 57.2447, 57.3296, 57.4923, 57.6048, 57.6718, 57.7821, 57.8578, 57.9266, 57.9966, 58.1231, 58.184, 58.2748, 58.3612, 58.4364, 58.5076, 58.6061, 58.6962, 58.745, 58.8256, 58.9066, 59.3083, 59.5132, 59.5572, 59.613, 59.7038, 59.8226, 59.8828, 59.9383, 59.9905, 60.0716, 60.0958, 60.1698, 60.2289, 60.3532, 60.4044, 60.4918, 60.5278, 60.5935, 60.7192, 60.8107, 60.9013, 61.0018, 61.0965, 61.168, 61.248, 61.3264, 61.3855, 61.4615, 61.4555, 61.5014, 61.5885, 61.7113, 61.7645, 61.8329, 61.9011, 61.9587, 61.9447, 62.0363, 62.1129, 62.1799, 62.43, 62.497, 62.5669, 62.6623, 62.7725, 62.851, 62.9274, 62.924, 62.9803, 63.0272, 63.1033, 63.1747, 63.2131, 63.3187, 63.3794, 63.4376, 63.4709, 63.5282, 63.7125, 63.8766, 63.9664, 64.0617, 64.1725];
+const ddValues = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0042, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0066, 0.0, 0.0, 0.0018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0048, 0.0, 0.0028, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0016, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0006, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0071, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0042, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0018, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0007, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0064, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0028, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0002, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0092, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0057, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0082, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0021, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0078, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0054, 0.0, 0.0082, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0029, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.006, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.014, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0034, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
+// ── Equity Curve ──
+new Chart(document.getElementById('equityChart'), {
+  type: 'line',
+  data: {
+    labels: eqDates,
+    datasets: [{
+      label: 'P&L cumulatif ($)',
+      data: eqValues,
+      borderColor: '#34d399',
+      backgroundColor: (ctx) => {
+        const g = ctx.chart.ctx.createLinearGradient(0,0,0,300);
+        g.addColorStop(0, 'rgba(52,211,153,0.18)');
+        g.addColorStop(1, 'rgba(52,211,153,0.01)');
+        return g;
+      },
+      fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' $' + ctx.parsed.y.toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxTicksLimit: 12, maxRotation: 0}},
+      y: {
+        ticks: {callback: v => '$' + v.toLocaleString('fr-FR', {minimumFractionDigits:0})},
+        grid: {color: '#1e2130'}
+      }
+    }
+  }
+});
+
+// ── Drawdown ──
+new Chart(document.getElementById('drawdownChart'), {
+  type: 'line',
+  data: {
+    labels: eqDates,
+    datasets: [{
+      label: 'Drawdown ($)',
+      data: ddValues.map(v => -v),
+      borderColor: '#f87171',
+      backgroundColor: 'rgba(248,113,113,0.12)',
+      fill: true, tension: 0.3, pointRadius: 0, borderWidth: 1.5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' -$' + Math.abs(ctx.parsed.y).toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxTicksLimit: 12, maxRotation: 0}},
+      y: {ticks: {callback: v => '-$' + Math.abs(v).toFixed(0)}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Monthly P&L ──
+new Chart(document.getElementById('monthlyPnlChart'), {
+  type: 'bar',
+  data: {
+    labels: ["2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02"],
+    datasets: [{
+      label: 'P&L ($)',
+      data: [2.48, 6.07, 5.5, 5.16, 5.81, 6.05, 4.8, 5.32, 5.38, 5.96, 6.29, 5.35],
+      backgroundColor: ["rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)", "rgba(52,211,153,0.8)"],
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {label: ctx => ' $' + ctx.parsed.y.toFixed(2)}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 45}},
+      y: {ticks: {callback: v => '$' + v}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Monthly Trades ──
+new Chart(document.getElementById('monthlyTradesChart'), {
+  type: 'bar',
+  data: {
+    labels: ["2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02"],
+    datasets: [{
+      label: 'Trades',
+      data: [31, 63, 64, 66, 73, 66, 56, 63, 67, 67, 73, 64],
+      backgroundColor: 'rgba(96,165,250,0.7)',
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false}},
+    scales: {
+      x: {ticks: {maxRotation: 45}},
+      y: {ticks: {stepSize: 1}, grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Spread distribution ──
+new Chart(document.getElementById('spreadChart'), {
+  type: 'bar',
+  data: {
+    labels: ["0.85\u20130.86", "0.86\u20130.87", "0.87\u20130.88", "0.88\u20130.89", "0.89\u20130.90", "0.90\u20130.91", "0.91\u20130.92", "0.92\u20130.93", "0.93\u20130.94", "0.94\u20130.95", "0.95\u20130.96", "0.96\u20130.97", "0.97\u20130.98", "0.98\u20130.99", "0.99\u20131.00"],
+    datasets: [{
+      label: 'Nombre de trades',
+      data: [0, 5, 19, 46, 58, 82, 106, 133, 111, 92, 54, 35, 12, 0, 0],
+      backgroundColor: 'rgba(167,139,250,0.75)',
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {title: ctx => 'Spread: ' + ctx[0].label}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 60, font: {size: 10}}},
+      y: {grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Profit distribution ──
+new Chart(document.getElementById('profitHistChart'), {
+  type: 'bar',
+  data: {
+    labels: ["-0.01", "0.01", "0.04", "0.07", "0.10", "0.13", "0.16", "0.19", "0.21", "0.24", "0.27", "0.30", "0.33", "0.36", "0.38"],
+    datasets: [{
+      label: 'Fréquence',
+      data: [25, 49, 233, 252, 125, 20, 18, 16, 5, 2, 1, 1, 1, 1, 4],
+      backgroundColor: (ctx) => {
+        const v = parseFloat(["-0.01", "0.01", "0.04", "0.07", "0.10", "0.13", "0.16", "0.19", "0.21", "0.24", "0.27", "0.30", "0.33", "0.36", "0.38"][ctx.dataIndex] || 0);
+        return v >= 0 ? 'rgba(52,211,153,0.75)' : 'rgba(248,113,113,0.75)';
+      },
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend: {display: false},
+      tooltip: {callbacks: {title: ctx => 'Profit: $' + ctx[0].label}}
+    },
+    scales: {
+      x: {ticks: {maxRotation: 60, font: {size: 10}}},
+      y: {grid: {color: '#1e2130'}}
+    }
+  }
+});
+
+// ── Capital Scaling ──
+new Chart(document.getElementById('scalingChart'), {
+  type: 'bar',
+  data: {
+    labels: ["$100", "$500", "$1,000", "$5,000", "$10,000", "$25,000", "$50,000", "$100,000"],
+    datasets: [
+      {
+        label: 'Profit projeté ($)',
+        data: [0.64, 3.21, 6.42, 32.09, 64.17, 160.43, 275.26, 447.17],
+        backgroundColor: 'rgba(52,211,153,0.75)',
+        borderRadius: 5, yAxisID: 'y'
+      },
+      {
+        label: 'ROI (%)',
+        data: [80.22, 80.22, 80.22, 80.22, 80.22, 80.22, 68.82, 55.9],
+        type: 'line',
+        borderColor: '#fbbf24',
+        backgroundColor: 'transparent',
+        pointBackgroundColor: '#fbbf24',
+        tension: 0.3, yAxisID: 'y2', borderWidth: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: {labels: {color: '#94a3b8', padding: 16}},
+      tooltip: {mode: 'index', intersect: false}
+    },
+    scales: {
+      x: {},
+      y: {
+        position: 'left',
+        ticks: {callback: v => '$' + v.toLocaleString('fr-FR', {maximumFractionDigits: 0})},
+        grid: {color: '#1e2130'}
+      },
+      y2: {
+        position: 'right',
+        ticks: {callback: v => v.toFixed(1) + '%'},
+        grid: {drawOnChartArea: false}
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
