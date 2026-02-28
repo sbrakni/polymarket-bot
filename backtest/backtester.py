@@ -374,6 +374,9 @@ async def main():
                        help="Volume minimum des marchés")
     parser.add_argument("--tags", nargs="*", help="Tags de marchés à filtrer")
     parser.add_argument("--save", help="Sauvegarder le rapport dans un fichier JSON")
+    parser.add_argument("--html", action="store_true", help="Générer un rapport HTML interactif")
+    parser.add_argument("--images", action="store_true", help="Générer des images PNG (matplotlib)")
+    parser.add_argument("--out", default="data/backtest_results", help="Dossier de sortie pour HTML/PNG")
     args = parser.parse_args()
 
     runner = BacktestRunner()
@@ -391,6 +394,16 @@ async def main():
             runner.print_report(result)
             if args.save:
                 runner.save_report(result, args.save)
+
+            # Générer les rapports visuels si demandés
+            if args.html or args.images:
+                from backtest.report_generator import ReportGenerator
+                gen = ReportGenerator(result, output_dir=args.out)
+                prefix = f"backtest_{args.preset}_{args.start}_{args.end}"
+                if args.html:
+                    gen.save_html(f"{prefix}.html")
+                if args.images:
+                    gen.save_images(prefix)
         else:
             print("Aucun résultat — vérifiez les paramètres")
     else:
